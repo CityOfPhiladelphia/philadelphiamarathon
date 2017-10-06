@@ -131,6 +131,7 @@
 
       <div v-once>
         <location-control v-once
+                          v-if="this.geolocationEnabled"
                           :position="'bottomright'"
         />
       </div>
@@ -256,9 +257,9 @@
       );
     },
     computed: {
-      // geolocation() {
-      //   return navigator.geolocation;
-      // },
+      geolocationEnabled() {
+        return this.$config.geolocation.enabled;
+      },
       activeBasemap() {
         const shouldShowImagery = this.$store.state.map.shouldShowImagery;
         if (shouldShowImagery) {
