@@ -8,16 +8,19 @@
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
     >
-    <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
-    <!-- @l-click="handleMapClick" -->
-    <!-- :class="{ 'mb-map-with-widget': this.$store.state.cyclomedia.active || this.$store.state.pictometry.active }" -->
-      <!-- loading mask -->
-      <div v-show="isGeocoding" class="mb-map-loading-mask">
-        <div class="mb-map-loading-mask-inner">
-          <i class="fa fa-spinner fa-4x spin"></i>
-          <h1>Finding address...</h1>
-        </div>
-      </div>
+
+      <!-- webmap -->
+      <!-- <esri-web-map>
+        <esri-web-map-layer v-for="(layer, key) in this.wmLayers"
+                            v-if="shouldShowFeatureLayer(layer)"
+                            :key="key"
+                            :layer="layer.layer"
+                            :layerName="layer.title"
+                            :layerDefinition="layer.rest.layerDefinition"
+                            :opacity="layer.opacity"
+                            :type="layer.type2"
+        />
+      </esri-web-map> -->
 
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
@@ -98,55 +101,27 @@
       <svg-marker v-if="this.cyclomediaActive" />
 
       <!-- geojson features -->
-      <geojson v-for="geojsonFeature in geojsonFeatures"
+      <!-- <geojson v-for="geojsonFeature in geojsonFeatures"
                v-if="shouldShowGeojson(geojsonFeature.key)"
                :geojson="geojsonFeature.geojson"
                :color="geojsonFeature.color"
                :weight="2"
                :key="geojsonFeature.key"
-       />
-       <!-- :overlay="geojsonFeature.overlayFeature" -->
-
-       <!-- TODO give these a real key -->
-      <circle-marker v-for="circleMarker in circleMarkers"
-                     :latlng="circleMarker.latlng"
-                     :radius="circleMarker.radius"
-                     :fillColor="circleMarker.fillColor"
-                   	 :color="circleMarker.color"
-                   	 :weight="circleMarker.weight"
-                   	 :opacity="circleMarker.opacity"
-                   	 :fillOpacity="circleMarker.fillOpacity"
-                     :key="Math.random()"
-                     :data="{
-                       featureId: circleMarker.featureId,
-                       tableId: circleMarker.tableId
-                     }"
-      />
-      <!-- @l-mouseover="handleCircleMarkerMouseover"
-      @l-mouseout="handleCircleMarkerMouseout" -->
-
-       <!-- <vector-marker v-for="marker in threeOneOneMarkers"
-                      v-if="activeTopicConfig.key === 'threeOneOne'"
-                      :latlng="[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]"
-                      :key="marker.id"
-                      :markerColor="'#b2ffb2'"
        /> -->
 
+       <!-- location marker -->
+       <circle-marker v-if="this.$store.state.map.location.lat != null"
+                      :latlng="this.locationMarker.latlng"
+                      :radius="this.locationMarker.radius"
+                      :fillColor="this.locationMarker.fillColor"
+                      :color="this.locationMarker.color"
+                      :weight="this.locationMarker.weight"
+                      :opacity="this.locationMarker.opacity"
+                      :fillOpacity="this.locationMarker.fillOpacity"
+                      :key="Math.random()"
+       />
+
       <!-- CONTROLS: -->
-      <!-- basemap control -->
-      <!-- <control-corner :vSide="'top'"
-                      :hSide="'almostright'"
-      >
-      </control-corner> -->
-
-      <!-- <control-corner :vSide="'bottom'"
-                      :hSide="'almostleft'"
-      >
-      </control-corner> -->
-
-      <!-- <basemap-tooltip :position="'topright'"
-      /> -->
-
       <div v-once>
         <basemap-toggle-control v-if="shouldShowImageryToggle"
                          v-once
@@ -154,11 +129,11 @@
         />
       </div>
 
-      <!-- <div v-once>
-        <basemap-select-control
-                       :position="'topalmostright'"
+      <div v-once>
+        <location-control v-once
+                          :position="'bottomright'"
         />
-      </div> -->
+      </div>
 
       <!-- <div v-once>
         <pictometry-button v-if="this.$config.pictometry.enabled"
@@ -178,29 +153,6 @@
                            @click="handleCyclomediaButtonClick"
         />
       </div> -->
-
-      <!-- <div v-once>
-        <measure-control :position="'bottomleft'"
-        />
-      </div> -->
-
-      <!-- <div v-once>
-        <legend-control v-for="legendControl in Object.keys(legendControls)"
-                        :key="legendControl"
-                        :position="'bottomleft'"
-                        :topic="legendControl"
-                        :items="legendControls[legendControl]"
-        />
-      </div> -->
-
-      <!-- <basemap-tooltip :position="'bottomalmostleft'"
-      /> -->
-
-      <!-- <scale-control :vSide="'top'"
-                     :hSide="'almostright'"
-      >
-      </scale-control> -->
-
 
       <!-- search control -->
       <!-- custom components seem to have to be wrapped like this to work
@@ -233,6 +185,7 @@
                                    :weight="1"
                                    @l-click="handleCyclomediaRecordingClick"
       />
+
     </map_>
     <slot class='widget-slot' name="cycloWidget" />
     <!-- <slot class='widget-slot' name="pictWidget" /> -->
@@ -247,25 +200,20 @@
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
+  import EsriWebMap from '../../esri-leaflet/WebMap.vue';
+  import EsriWebMapLayer from '../../esri-leaflet/WebMapLayer.vue';
   import EsriTiledMapLayer from '../../esri-leaflet/TiledMapLayer.vue';
   import EsriDynamicMapLayer from '../../esri-leaflet/DynamicMapLayer.vue';
   import EsriFeatureLayer from '../../esri-leaflet/FeatureLayer.vue';
   import Geojson from '../../leaflet/Geojson.vue';
   import CircleMarker from '../../leaflet/CircleMarker.vue';
-  // import OpacitySlider from '../OpacitySlider.vue';
   import VectorMarker from '../VectorMarker.vue';
   import PngMarker from '../PngMarker.vue';
   import SvgMarker from '../SvgMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
-  // import BasemapSelectControl from '../BasemapSelectControl.vue';
-  // import CyclomediaButton from '../../cyclomedia/Button.vue';
-  // import PictometryButton from '../../pictometry/Button.vue';
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
-  // import MeasureControl from '../MeasureControl.vue';
-  // import LegendControl from '../LegendControl.vue';
-  // import BasemapTooltip from '../BasemapTooltip.vue';
-  // import ControlCorner from '../../leaflet/ControlCorner.vue';
+  import LocationControl from '../LocationControl.vue';
 
   export default {
     mixins: [
@@ -276,24 +224,21 @@
     components: {
       Map_,
       Control,
+      EsriWebMap,
+      EsriWebMapLayer,
       EsriTiledMapLayer,
       EsriDynamicMapLayer,
       EsriFeatureLayer,
       Geojson,
       CircleMarker,
-      // OpacitySlider,
       VectorMarker,
       PngMarker,
       SvgMarker,
       BasemapToggleControl,
-      // BasemapSelectControl,
       // PictometryButton,
       // CyclomediaButton,
       CyclomediaRecordingCircle,
-      // MeasureControl,
-      // LegendControl,
-      // BasemapTooltip,
-      // ControlCorner,
+      LocationControl,
     },
     created() {
       // if there's a default address, navigate to it
@@ -310,34 +255,9 @@
         4326
       );
     },
-    mounted() {
-      this.$controller.appDidLoad();
-    },
     computed: {
-      // activeDorParcel() {
-      //   return this.$store.state.activeDorParcel;
-      // },
-      // legendControls() {
-      //   return this.$config.legendControls;
-      // },
-      // imageOverlay() {
-      //   return this.$store.state.map.imageOverlay;
-      // },
-      // imageOverlayItems() {
-      //   // console.log('calculating imageOverlayItem');
-      //   if (this.activeTopicConfig.imageOverlayGroup) {
-      //     const overlayGroup = this.activeTopicConfig.imageOverlayGroup;
-      //     const state = this.$store.state;
-      //     const overlay = this.$config.imageOverlayGroups[overlayGroup].items(state);
-      //     // console.log('returning imageOverlayItem', overlay);
-      //     return overlay;
-      //   } else {
-      //     return [];
-      //   }
-      // },
-      // imageOverlayInfo() {
-      //   console.log('config:', this.$config);
-      //   return this.$config.map.dynamicMapLayers.regmaps;
+      // geolocation() {
+      //   return navigator.geolocation;
       // },
       activeBasemap() {
         const shouldShowImagery = this.$store.state.map.shouldShowImagery;
@@ -383,39 +303,6 @@
       shouldShowImageryToggle() {
         return this.hasImageryBasemaps && this.$config.map.imagery.enabled;
       },
-      // identifyFeature() {
-      //   const configFeature = this.activeTopicConfig.identifyFeature;
-      //   if (configFeature) {
-      //     return configFeature;
-      //   } else {
-      //     return this.$config.map.defaultIdentifyFeature;
-      //   }
-      // },
-      // activeTopic() {
-      //   return this.$store.state.activeTopic;
-      // },
-      // activeTopicConfig() {
-      //   const key = this.activeTopic;
-      //   let config;
-      //
-      //   // if no active topic, return null
-      //   if (key) {
-      //     config = this.$config.topics.filter((topic) => {
-      //       return topic.key === key;
-      //     })[0];
-      //   }
-      //
-      //   return config || {};
-      // },
-      // activeParcelLayer() {
-      //   return this.activeTopicConfig.parcels;
-      // },
-      // dorParcels() {
-      //   return this.$store.state.dorParcels.data;
-      // },
-      // pwdParcel() {
-      //   return this.$store.state.pwdParcel;
-      // },
       geocodeResult() {
         return this.$store.state.geocode.data || {};
       },
@@ -432,20 +319,17 @@
       //     return false;
       //   }
       // },
-      // mapBounds() {
-      //   // TODO calculate map bounds based on leaflet markers above
-      // },
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       }
     },
-    watch: {
-      picOrCycloActive(value) {
-        this.$nextTick(() => {
-          this.$store.state.map.map.invalidateSize();
-        })
-      }
-    },
+    // watch: {
+    //   picOrCycloActive(value) {
+    //     this.$nextTick(() => {
+    //       this.$store.state.map.map.invalidateSize();
+    //     })
+    //   }
+    // },
     methods: {
       configForBasemap(basemap) {
         return this.$config.map.basemaps[basemap] || {};
@@ -457,17 +341,9 @@
           return key === this.activeDorParcel;
         }
       },
-      // shouldShowImageOverlay(key) {
-      //   return key === this.imageOverlay;
+      // shouldShowFeatureLayer(key, minZoom) {
+      //   return true;
       // },
-      shouldShowFeatureLayer(key, minZoom) {
-        return true;
-        // if (this.activeFeatureLayers.includes(key) && this.$store.state.map.zoom >= minZoom) {
-        //   return true;
-        // } else {
-        //   return false;
-        // }
-      },
       // handleMapClick(e) {
       //   this.$controller.handleMapClick(e);
       // },
@@ -477,16 +353,16 @@
 
         const pictometryConfig = this.$config.pictometry || {};
 
-        if (pictometryConfig.enabled) {
-          // update state for pictometry
-          const center = map.getCenter();
-          const { lat, lng } = center;
-          const coords = [lng, lat];
-          this.$store.commit('setPictometryMapCenter', coords);
-
-          const zoom = map.getZoom();
-          this.$store.commit('setPictometryMapZoom', zoom);
-        }
+        // if (pictometryConfig.enabled) {
+        //   // update state for pictometry
+        //   const center = map.getCenter();
+        //   const { lat, lng } = center;
+        //   const coords = [lng, lat];
+        //   this.$store.commit('setPictometryMapCenter', coords);
+        //
+        //   const zoom = map.getZoom();
+        //   this.$store.commit('setPictometryMapZoom', zoom);
+        // }
 
         const cyclomediaConfig = this.$config.cyclomedia || {};
 
@@ -498,22 +374,6 @@
       handleSearchFormSubmit(e) {
         this.$controller.handleSearchFormSubmit(e);
       },
-      // fillColorForCircleMarker(markerId, tableId) {
-      //   // get map overlay style and hover style for table
-      //   const tableConfig = this.getConfigForTable(tableId);
-      //   const mapOverlay = tableConfig.options.mapOverlay;
-      //   const { style, hoverStyle } = mapOverlay;
-      //
-      //   // compare id to active feature id
-      //   const activeFeature = this.activeFeature;
-      //   const useHoverStyle = (
-      //     markerId === activeFeature.featureId &&
-      //     tableId === activeFeature.tableId
-      //   );
-      //   const curStyle = useHoverStyle ? hoverStyle : style;
-      //
-      //   return curStyle.fillColor;
-      // },
     }, // end of methods
   }; //end of export
 </script>

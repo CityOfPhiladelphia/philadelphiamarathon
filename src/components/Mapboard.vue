@@ -47,7 +47,7 @@
   import TopicPanel from './TopicPanel.vue';
   import MapPanel from './map-panel/MapPanel.vue';
   import CyclomediaWidget from '../cyclomedia/Widget.vue';
-  import PictometryWidget from '../pictometry/Widget.vue';
+  // import PictometryWidget from '../pictometry/Widget.vue';
   import Layer from '../pictometry/Layer.vue';
   import ViewCone from '../pictometry/ViewCone.vue';
   import PngMarker from '../pictometry/PngMarker.vue';
@@ -57,7 +57,7 @@
       TopicPanel,
       MapPanel,
       CyclomediaWidget,
-      PictometryWidget,
+      // PictometryWidget,
       Layer,
       ViewCone,
       PngMarker
@@ -89,30 +89,30 @@
       cyclomediaActive() {
         return true;
       },
-      pictometryActive() {
-        return this.$store.state.pictometry.active
-      },
-      pictometryZoom() {
-        return this.$store.state.pictometry.zoom
-      },
-      pictometryShowAddressMarker() {
-        if (!this.pictometryActive || !this.geocodeData) {
-          return false;
-        } else if (this.pictometryZoom < 20 && this.cyclomediaActive) {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      // pictometryActive() {
+      //   return this.$store.state.pictometry.active
+      // },
+      // pictometryZoom() {
+      //   return this.$store.state.pictometry.zoom
+      // },
+      // pictometryShowAddressMarker() {
+      //   if (!this.pictometryActive || !this.geocodeData) {
+      //     return false;
+      //   } else if (this.pictometryZoom < 20 && this.cyclomediaActive) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
       geocodeData() {
         return this.$store.state.geocode.data
       }
     },
-    watch: {
-      pictometryShowAddressMarker(nextValue) {
-        console.log('watch pictometryShowAddressMarker', nextValue);
-      }
-    }
+    // watch: {
+    //   pictometryShowAddressMarker(nextValue) {
+    //     console.log('watch pictometryShowAddressMarker', nextValue);
+    //   }
+    // }
   };
 </script>
 
