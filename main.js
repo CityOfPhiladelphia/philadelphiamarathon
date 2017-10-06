@@ -2,6 +2,7 @@ var GATEKEEPER_KEY = '60a96cf015063fa0f0e2708bc3c61775';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
 var BASE_CONFIG_URL = '//rawgit.com/ajrothwell/marathon-base-config/af047c99136d807021519ff8501fc74b894c14a9/config.js';
 
+
 var ZONING_CODE_MAP = {
   'RSD-1': 'Residential Single Family Detached-1',
   'RSD-2': 'Residential Single Family Detached-2',
@@ -129,6 +130,9 @@ Mapboard.default({
   // DEV
   // defaultAddress: '1234 MARKET ST',
   router: {
+    enabled: true
+  },
+  geolocation: {
     enabled: true
   },
   rootStyle: {

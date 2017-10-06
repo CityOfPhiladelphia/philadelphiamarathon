@@ -160,6 +160,7 @@ function createStore(config) {
       imageOverlay: null,
       imageOverlayOpacity: null,
       filters: [],
+      watchPositionOn: false,
       // features: {
       //   markers: [
       //     // {
@@ -248,6 +249,9 @@ function createStore(config) {
       setLocation(state, payload) {
         state.map.location.lat = payload.lat;
         state.map.location.lng = payload.lng;
+      },
+      setWatchPositionOn(state, payload) {
+        state.map.watchPositionOn = payload;
       },
       setClickCoords(state, payload) {
         state.clickCoords = payload;
