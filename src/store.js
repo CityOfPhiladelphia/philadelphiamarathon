@@ -130,8 +130,8 @@ function createStore(config) {
   }, {});
 
   const initialState = {
-    activeTopic: defaultTopic.key,
-    activeParcelLayer: defaultTopic.parcels,
+    // activeTopic: defaultTopic.key,
+    // activeParcelLayer: defaultTopic.parcels,
     // the ais feature
     clickCoords: null,
     geocode: {
@@ -145,6 +145,10 @@ function createStore(config) {
     lastSearchMethod: null,
     // the leaflet map object
     map: {
+      location: {
+        lat: null,
+        lng: null
+      },
       center: config.map.center,
       zoom: config.map.zoom,
       map: null,
@@ -169,15 +173,15 @@ function createStore(config) {
       //   ]
       // }
     },
-    dorParcels: {
-      data: [],
-      status: null
-    },
-    activeDorParcel: null,
-    activeDorAddress: null,
-    activeDorMapreg: null,
-    pwdParcel: null,
-    sources,
+    // dorParcels: {
+    //   data: [],
+    //   status: null
+    // },
+    // activeDorParcel: null,
+    // activeDorAddress: null,
+    // activeDorMapreg: null,
+    // pwdParcel: null,
+    // sources,
     cyclomedia: {
       active: false,
       viewer: null,
@@ -186,67 +190,65 @@ function createStore(config) {
       locFromViewer: null,
     },
     // we need this to know whether or not to force an update on the first show
-    pictometry: {
-      ipa: null,
-      active: false,
-      shapeIds: [],
-      pngMarkerIds: [],
-      zoom: null,
-      // this is the state of the main leaflet map. when these values change
-      // the pictometry widget should react. the reason these are duplicated
-      // here is to avoid an infinite loop in the Map component when the
-      // viewport changes.
-      map: {
-        center: config.map.center,
-        zoom: config.map.zoom
-      }
-    },
-    tables: {
-      // table id => filtered rows
-      filteredData: createFilteredData(config),
-    },
-    tableGroups: createTableGroups(config),
-    activeFeature: {
-      featureId: null,
-      tableId: null
-    }
+    // pictometry: {
+    //   ipa: null,
+    //   active: false,
+    //   shapeIds: [],
+    //   pngMarkerIds: [],
+    //   zoom: null,
+    //   // this is the state of the main leaflet map. when these values change
+    //   // the pictometry widget should react. the reason these are duplicated
+    //   // here is to avoid an infinite loop in the Map component when the
+    //   // viewport changes.
+    //   map: {
+    //     center: config.map.center,
+    //     zoom: config.map.zoom
+    //   }
+    // },
+    // tables: {
+    //   // table id => filtered rows
+    //   filteredData: createFilteredData(config),
+    // },
+    // tableGroups: createTableGroups(config),
+    // activeFeature: {
+    //   featureId: null,
+    //   tableId: null
+    // }
   };
 
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
     // getters: {
-    //   topicTables: (state, getters) => (activeTopicKey) => {
-    //     console.log(state.tables);
-    //     return state.tables.filter(table => table.key === activeTopicKey);
+    //   visibleTableIds(state) {
+    //     // get active topic
+    //     const activeTopic = state.activeTopic;
+    //
+    //     if (!activeTopic) {
+    //       return [];
+    //     }
+    //
+    //     // get horizontal table ids for that topic
+    //     const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
+    //     const comps = activeTopicConfig.components;
+    //
+    //     const compTableGroup = getTableGroupIdFromComps(comps);
+    //     if (compTableGroup) {
+    //       // even though there is only 1 value, it has to be in array form in the state
+    //       const array = [];
+    //       array.push(state.tableGroups[compTableGroup].activeTableId);
+    //       return array;
+    //     } else {
+    //       const compTables = getTableIdsFromComps(comps);
+    //       return compTables;
+    //     }
     //   }
     // },
-    getters: {
-      visibleTableIds(state) {
-        // get active topic
-        const activeTopic = state.activeTopic;
-
-        if (!activeTopic) {
-          return [];
-        }
-
-        // get horizontal table ids for that topic
-        const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
-        const comps = activeTopicConfig.components;
-
-        const compTableGroup = getTableGroupIdFromComps(comps);
-        if (compTableGroup) {
-          // even though there is only 1 value, it has to be in array form in the state
-          const array = [];
-          array.push(state.tableGroups[compTableGroup].activeTableId);
-          return array;
-        } else {
-          const compTables = getTableIdsFromComps(comps);
-          return compTables;
-        }
-      }
-    },
     mutations: {
+      setLocation(state, payload) {
+        state.map.location.lat = payload.lat;
+        state.map.location.lng = payload.lng;
+      },
       setClickCoords(state, payload) {
         state.clickCoords = payload;
       },
@@ -265,87 +267,87 @@ function createStore(config) {
 
         state.tables.filteredData[tableId] = data;
       },
-      setActiveTopic(state, payload) {
-        state.activeTopic = payload;
-      },
-      setActiveParcelLayer(state, payload) {
-        state.activeParcelLayer = payload;
-      },
-      setSourceStatus(state, payload) {
-        const key = payload.key;
-        const status = payload.status;
-
-        // if a target id was passed in, set the status for that target
-        const targetId = payload.targetId;
-
-        if (targetId) {
-          state.sources[key].targets[targetId].status = status;
-        } else {
-          state.sources[key].status = status;
-        }
-      },
-      setSecondarySourceStatus(state, payload) {
-        const key = payload.key;
-        const secondaryStatus = payload.secondaryStatus;
-
-        // if a target id was passed in, set the status for that target
-        const targetId = payload.targetId;
-
-        // if (targetId) {
-        //   state.sources[key].targets[targetId].status = status;
-        // } else {
-        state.sources[key].secondaryStatus = secondaryStatus;
-        // }
-      },
-      setSourceData(state, payload) {
-        const key = payload.key;
-        const data = payload.data;
-
-        // if a target id was passed in, set the data object for that target
-        const targetId = payload.targetId;
-
-        if (targetId) {
-          state.sources[key].targets[targetId].data = data;
-        } else {
-          state.sources[key].data = data;
-        }
-      },
-      setSourceDataMore(state, payload) {
-        const key = payload.key;
-        const data = payload.data;
-        const oldData = state.sources[key].data;
-        console.log('oldData features', oldData.features, 'data features', data.features);
-        const allData = oldData.features.concat(data.features);
-        console.log('allData', allData);
-        // if a target id was passed in, set the data object for that target
-        // const targetId = payload.targetId;
-
-        // if (targetId) {
-        //   state.sources[key].targets[targetId].data = data;
-        // } else {
-
-        state.sources[key].data.features = allData;
-        state.sources[key].data.page = 2;
-        // }
-      },
+      // setActiveTopic(state, payload) {
+      //   state.activeTopic = payload;
+      // },
+      // setActiveParcelLayer(state, payload) {
+      //   state.activeParcelLayer = payload;
+      // },
+      // setSourceStatus(state, payload) {
+      //   const key = payload.key;
+      //   const status = payload.status;
+      //
+      //   // if a target id was passed in, set the status for that target
+      //   const targetId = payload.targetId;
+      //
+      //   if (targetId) {
+      //     state.sources[key].targets[targetId].status = status;
+      //   } else {
+      //     state.sources[key].status = status;
+      //   }
+      // },
+      // setSecondarySourceStatus(state, payload) {
+      //   const key = payload.key;
+      //   const secondaryStatus = payload.secondaryStatus;
+      //
+      //   // if a target id was passed in, set the status for that target
+      //   const targetId = payload.targetId;
+      //
+      //   // if (targetId) {
+      //   //   state.sources[key].targets[targetId].status = status;
+      //   // } else {
+      //   state.sources[key].secondaryStatus = secondaryStatus;
+      //   // }
+      // },
+      // setSourceData(state, payload) {
+      //   const key = payload.key;
+      //   const data = payload.data;
+      //
+      //   // if a target id was passed in, set the data object for that target
+      //   const targetId = payload.targetId;
+      //
+      //   if (targetId) {
+      //     state.sources[key].targets[targetId].data = data;
+      //   } else {
+      //     state.sources[key].data = data;
+      //   }
+      // },
+      // setSourceDataMore(state, payload) {
+      //   const key = payload.key;
+      //   const data = payload.data;
+      //   const oldData = state.sources[key].data;
+      //   console.log('oldData features', oldData.features, 'data features', data.features);
+      //   const allData = oldData.features.concat(data.features);
+      //   console.log('allData', allData);
+      //   // if a target id was passed in, set the data object for that target
+      //   // const targetId = payload.targetId;
+      //
+      //   // if (targetId) {
+      //   //   state.sources[key].targets[targetId].data = data;
+      //   // } else {
+      //
+      //   state.sources[key].data.features = allData;
+      //   state.sources[key].data.page = 2;
+      //   // }
+      // },
       setMapFilters(state, payload) {
         state.map.filters = payload;
       },
       // this sets empty targets for a data source
-      createEmptySourceTargets(state, payload) {
-        const {key, targetIds} = payload;
-        state.sources[key].targets = targetIds.reduce((acc, targetId) => {
-          acc[targetId] = {
-            status: null,
-            data: null
-          };
-          return acc;
-        }, {});
-      },
-      clearSourceTargets(state, payload) {
-        const key = payload.key;
-        state.sources[key].targets = {};
-      },
+      // createEmptySourceTargets(state, payload) {
+      //   const {key, targetIds} = payload;
+      //   state.sources[key].targets = targetIds.reduce((acc, targetId) => {
+      //     acc[targetId] = {
+      //       status: null,
+      //       data: null
+      //     };
+      //     return acc;
+      //   }, {});
+      // },
+      // clearSourceTargets(state, payload) {
+      //   const key = payload.key;
+      //   state.sources[key].targets = {};
+      // },
       setMap(state, payload) {
         state.map.map = payload.map;
       },
@@ -433,25 +435,25 @@ function createStore(config) {
       setLastSearchMethod(state, payload) {
         state.lastSearchMethod = payload;
       },
-      setPictometryIpa(state, payload) {
-        state.pictometry.ipa = payload;
-      },
-      setPictometryShapeIds(state, payload) {
-        state.pictometry.shapeIds = payload;
-      },
-      setPictometryPngMarkerIds(state, payload) {
-        state.pictometry.pngMarkerIds = payload;
-      },
+      // setPictometryIpa(state, payload) {
+      //   state.pictometry.ipa = payload;
+      // },
+      // setPictometryShapeIds(state, payload) {
+      //   state.pictometry.shapeIds = payload;
+      // },
+      // setPictometryPngMarkerIds(state, payload) {
+      //   state.pictometry.pngMarkerIds = payload;
+      // },
       // this is the leaflet map center updated when the map is moved
-      setPictometryMapCenter(state, payload) {
-        state.pictometry.map.center = payload;
-      },
-      setPictometryMapZoom(state, payload) {
-        state.pictometry.map.zoom = payload;
-      },
-      setPictometryZoom(state, payload) {
-        state.pictometry.zoom = payload;
-      },
+      // setPictometryMapCenter(state, payload) {
+      //   state.pictometry.map.center = payload;
+      // },
+      // setPictometryMapZoom(state, payload) {
+      //   state.pictometry.map.zoom = payload;
+      // },
+      // setPictometryZoom(state, payload) {
+      //   state.pictometry.zoom = payload;
+      // },
       setImageOverlay(state, payload) {
         state.map.imageOverlay = payload;
       },

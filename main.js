@@ -1,4 +1,4 @@
-var GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
+var GATEKEEPER_KEY = '60a96cf015063fa0f0e2708bc3c61775';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
 var BASE_CONFIG_URL = '//rawgit.com/ajrothwell/marathon-base-config/af047c99136d807021519ff8501fc74b894c14a9/config.js';
 
@@ -162,19 +162,13 @@ Mapboard.default({
         minZoom: 12,
         opacity: 0.2,
       },
-      mileMarkers: {
-        url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/FullMiles/FeatureServer/0',
-        color: 'blue',
-        fillColor: 'blue',
-        weight: 1,
-        minZoom: 12,
-        pointLayer: true
-      },
-      // dorParcels: {
-      //   url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/24',
-      // },
-      // pwdParcels: {
-      //   url: '//gis.phila.gov/arcgis/rest/services/Water/pv_data_geodb2/MapServer/0',
+      // mileMarkers: {
+      //   url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/FullMiles/FeatureServer/0',
+      //   color: 'blue',
+      //   fillColor: 'blue',
+      //   weight: 1,
+      //   minZoom: 12,
+      //   pointLayer: true
       // },
     }
   },
