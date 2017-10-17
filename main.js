@@ -1,6 +1,6 @@
 var GATEKEEPER_KEY = '60a96cf015063fa0f0e2708bc3c61775';
 // var BASE_CONFIG_URL = '//raw.githubusercontent.com/rbrtmrtn/mapboard-base-config/develop/config.js';
-var BASE_CONFIG_URL = '//rawgit.com/ajrothwell/marathon-base-config/af047c99136d807021519ff8501fc74b894c14a9/config.js';
+var BASE_CONFIG_URL = '//rawgit.com/ajrothwell/philadelphiamarathon-base-config/38ecf77f75ac3524b05c0865173a3657d8b25671/config.js';
 
 
 var ZONING_CODE_MAP = {
@@ -139,7 +139,7 @@ Mapboard.default({
     position: 'absolute',
     bottom: 0,
     // top: '78px',
-    top: '118px',
+    top: '78px',
     left: 0,
     right: 0,
   },
@@ -158,14 +158,14 @@ Mapboard.default({
     maxZoom: 25,
     zoom: 13,
     featureLayers: {
-      marathon: {
-        url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/FullMarathon/FeatureServer/0',
-        color: 'red',
-        fillColor: 'red',
-        weight: 10,
-        minZoom: 12,
-        opacity: 0.2,
-      },
+      // marathon: {
+      //   url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/FullMarathon/FeatureServer/0',
+      //   color: 'red',
+      //   fillColor: 'red',
+      //   weight: 10,
+      //   minZoom: 12,
+      //   opacity: 0.2,
+      // },
       // mileMarkers: {
       //   url: '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/FullMiles/FeatureServer/0',
       //   color: 'blue',
