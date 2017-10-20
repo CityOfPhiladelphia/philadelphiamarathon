@@ -124,9 +124,16 @@
       <!-- CONTROLS: -->
       <div v-once>
         <basemap-toggle-control v-if="shouldShowImageryToggle"
-                         v-once
-                         :position="'topright'"
+                                v-once
+                                :position="'topright'"
         />
+      </div>
+
+      <div v-once>
+        <marathon-toggle-control v-once
+                                 :position="'topright'"
+        />
+        <!-- v-if="shouldShowImageryToggle" -->
       </div>
 
       <div v-once>
@@ -212,6 +219,7 @@
   import PngMarker from '../PngMarker.vue';
   import SvgMarker from '../SvgMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
+  import MarathonToggleControl from '../MarathonToggleControl.vue';
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
   import LocationControl from '../LocationControl.vue';
@@ -236,6 +244,7 @@
       PngMarker,
       SvgMarker,
       BasemapToggleControl,
+      MarathonToggleControl,
       // PictometryButton,
       // CyclomediaButton,
       CyclomediaRecordingCircle,
@@ -270,10 +279,21 @@
         return basemap;
       },
       tiledLayers() {
+        let layers = []
         const activeBasemap = this.activeBasemap;
         const activeBasemapConfig = this.configForBasemap(activeBasemap)
-
-        return activeBasemapConfig.tiledLayers || [];
+        // console.log('activeBasemapConfig', activeBasemapConfig);
+        const basemapTiledLayers = activeBasemapConfig.tiledLayers;
+        for (let basemapTiledLayer of basemapTiledLayers) {
+          layers.push(basemapTiledLayer);
+        };
+        const shouldShowFullMarathon = this.$store.state.map.shouldShowFullMarathon;
+        if (shouldShowFullMarathon) {
+          layers.push('fullMarathon');
+        } else {
+          layers.push('halfMarathon');
+        }
+        return layers;
       },
       activeDynamicMaps() {
         if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {

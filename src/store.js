@@ -155,6 +155,7 @@ function createStore(config) {
       basemap: defaultTopic.basemap,
       imagery: 'imagery2017',
       shouldShowImagery: false,
+      shouldShowFullMarathon: true,
       // circleMarkers: [],
       // this is the key for the active overlay image (eg regmap)
       imageOverlay: null,
@@ -406,6 +407,9 @@ function createStore(config) {
       },
       setShouldShowImagery(state, payload) {
         state.map.shouldShowImagery = payload;
+      },
+      setShouldShowFullMarathon(state, payload) {
+        state.map.shouldShowFullMarathon = payload;
       },
       setPictometryActive(state, payload) {
         if (!config.pictometry.enabled) {
