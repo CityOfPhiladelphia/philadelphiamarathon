@@ -122,18 +122,32 @@
        />
 
       <!-- CONTROLS: -->
+      <control-corner :vSide="'top'"
+                      :hSide="'almostright'"
+      >
+      </control-corner>
+
       <div v-once>
-        <basemap-toggle-control v-if="shouldShowImageryToggle"
-                                v-once
-                                :position="'topright'"
+        <marathon-toggle-control v-once
+                                 :position="'topalmostright'"
+                                 :fullOrHalf="'half'"
         />
+        <!-- v-if="shouldShowImageryToggle" -->
       </div>
 
       <div v-once>
         <marathon-toggle-control v-once
                                  :position="'topright'"
+                                 :fullOrHalf="'full'"
         />
         <!-- v-if="shouldShowImageryToggle" -->
+      </div>
+
+      <div v-once>
+        <basemap-toggle-control v-if="shouldShowImageryToggle"
+                                v-once
+                                :position="'topright'"
+        />
       </div>
 
       <div v-once>
@@ -224,6 +238,7 @@
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
   import LocationControl from '../LocationControl.vue';
+  import ControlCorner from '../../leaflet/ControlCorner.vue';
 
   export default {
     mixins: [
@@ -250,6 +265,7 @@
       CyclomediaButton,
       CyclomediaRecordingCircle,
       LocationControl,
+      ControlCorner,
     },
     created() {
       // if there's a default address, navigate to it
@@ -295,8 +311,8 @@
         for (let basemapTiledLayer of basemapTiledLayers) {
           layers.push(basemapTiledLayer);
         };
-        const shouldShowFullMarathon = this.$store.state.map.shouldShowFullMarathon;
-        if (shouldShowFullMarathon) {
+        const marathonVersion = this.$store.state.marathonVersion;
+        if (marathonVersion === 'full') {
           layers.push('fullMarathon');
         } else {
           layers.push('halfMarathon');
@@ -355,13 +371,13 @@
         return this.$store.state.geocode.status === 'waiting';
       }
     },
-    // watch: {
-    //   picOrCycloActive(value) {
-    //     this.$nextTick(() => {
-    //       this.$store.state.map.map.invalidateSize();
-    //     })
-    //   }
-    // },
+    watch: {
+      cyclomediaActive(value) {
+        this.$nextTick(() => {
+          this.$store.state.map.map.invalidateSize();
+        })
+      }
+    },
     methods: {
       configForBasemap(basemap) {
         return this.$config.map.basemaps[basemap] || {};

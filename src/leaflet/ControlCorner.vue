@@ -38,7 +38,7 @@
     top: 0px; /* possible because the placeholder's parent is the map */
     /*transform: translateY(-50%); /* using the CSS3 Transform technique */
     /*padding-top: 10px;*/
-    right: 60px;
+    right: 45px;
     padding-bottom: 10px;
     z-index: 500;
   }
