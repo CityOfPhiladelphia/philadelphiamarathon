@@ -56,7 +56,7 @@
           const cycloDiv = this.$refs.cycloviewer;
           const viewer = StreetSmartApi.addPanoramaViewer(cycloDiv, {recordingsVisible: true, timeTravelVisible: true});
           this.$store.commit('setCyclomediaViewer', viewer);
-          this.$store.commit('setCyclomediaActive', true);
+          // this.$store.commit('setCyclomediaActive', true);
 
           // get map center and set location
           const map = this.$store.state.map.map;

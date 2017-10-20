@@ -4,7 +4,6 @@
        :style="this.$config.rootStyle"
   >
     <map-panel>
-
       <!-- <pictometry-widget v-if="this.$config.pictometry.enabled"
                          slot="pictWidget"
                          v-show="pictometryActive"
@@ -35,8 +34,12 @@
       </pictometry-widget> -->
       <!-- :center="this.$store.state.map.map.center" -->
     </map-panel>
-    <cyclomedia-widget
+    <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
+                       slot="cycloWidget"
+                       v-show="cyclomediaActive"
     />
+    <!-- <cyclomedia-widget
+    /> -->
     <!-- v-if="this.$config.cyclomedia.enabled"
     slot="cycloWidget"
     v-show="cyclomediaActive" -->

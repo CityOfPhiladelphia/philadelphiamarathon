@@ -1,5 +1,5 @@
 <template>
-  <div id="map-container" class="large-12 columns mb-panel mb-panel-map">
+  <div id="map-container" :class="'large-'+this.columns+' columns mb-panel mb-panel-map'">
     <map_
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"
@@ -152,7 +152,7 @@
         />
       </div> -->
 
-      <!-- <div v-once>
+      <div v-once>
         <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
                            v-once
                            :position="'topright'"
@@ -160,7 +160,7 @@
                            :imgSrc="'../../src/assets/cyclomedia.png'"
                            @click="handleCyclomediaButtonClick"
         />
-      </div> -->
+      </div>
 
       <!-- search control -->
       <!-- custom components seem to have to be wrapped like this to work
@@ -220,6 +220,7 @@
   import SvgMarker from '../SvgMarker.vue';
   import BasemapToggleControl from '../BasemapToggleControl.vue';
   import MarathonToggleControl from '../MarathonToggleControl.vue';
+  import CyclomediaButton from '../../cyclomedia/Button.vue';
   import CyclomediaRecordingCircle from '../../cyclomedia/RecordingCircle.vue';
   import CyclomediaRecordingsClient from '../../cyclomedia/recordings-client';
   import LocationControl from '../LocationControl.vue';
@@ -246,7 +247,7 @@
       BasemapToggleControl,
       MarathonToggleControl,
       // PictometryButton,
-      // CyclomediaButton,
+      CyclomediaButton,
       CyclomediaRecordingCircle,
       LocationControl,
     },
@@ -266,6 +267,13 @@
       );
     },
     computed: {
+      columns() {
+        if (this.cyclomediaActive) {
+          return 12;
+        } else {
+          return 24;
+        }
+      },
       geolocationEnabled() {
         return this.$config.geolocation.enabled;
       },
@@ -332,6 +340,9 @@
       },
       streetAddress() {
         return this.geocodeResult.properties.street_address;
+      },
+      cyclomediaActive() {
+        return this.$store.state.cyclomedia.active;
       },
       // picOrCycloActive() {
       //   if (this.cyclomediaActive || this.pictometryActive) {
