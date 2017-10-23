@@ -1,12 +1,23 @@
 <template>
-  <div class="leaflet-bar easy-button-container leaflet-control">
-    <button @click="handleButtonClick"
-            :class="this.ifActive"
-    >
-      <span class="button-state state-unnamed-state unnamed-state-active">
-        <img class="button-image" :src="toggleButtonImgSrc">
-      </span>
-    </button>
+  <div>
+    <div class="leaflet-bar easy-button-container twin-button">
+      <button @click="handleHalfButtonClick"
+              :class="this.ifHalfActive"
+      >
+        <span class="button-state state-unnamed-state unnamed-state-active">
+          <img class="button-image" :src="'../../src/assets/half.png'">
+        </span>
+      </button>
+    </div>
+    <div class="leaflet-bar easy-button-container twin-button">
+      <button @click="handleFullButtonClick"
+              :class="this.ifFullActive"
+      >
+        <span class="button-state state-unnamed-state unnamed-state-active">
+          <img class="button-image" :src="'../../src/assets/full.png'">
+        </span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -18,40 +29,44 @@
   export default {
     props: [
       'position',
-      'fullOrHalf'
     ],
     computed: {
-      isActive() {
-        const currentVersion = this.$store.state.marathonVersion;
-        const buttonVersion = this.$props.fullOrHalf;
-        return currentVersion === buttonVersion;
+      activeVersion() {
+        return this.$store.state.marathonVersion;
       },
-      ifActive() {
-        if (this.isActive) {
-          return 'active';
-        }
-      },
-      toggleButtonImgSrc() {
-        let src;
-        if (this.$props.fullOrHalf === 'half') {
-          src = "../../src/assets/half.png"
+      ifHalfActive() {
+        let isActive;
+        if (this.activeVersion === 'half') {
+          isActive = 'active'
         } else {
-          src = "../../src/assets/full.png"
+          isActive = 'inactive'
         }
-        return src;
+        return isActive;
       },
-
+      ifFullActive() {
+        let isActive;
+        if (this.activeVersion === 'full') {
+          isActive = 'active'
+        } else {
+          isActive = 'inactive'
+        }
+        return isActive;
+      },
     },
     methods: Object.assign(methods, {
-      handleButtonClick(e) {
+      handleHalfButtonClick(e) {
         if (this.isActive) {
           return;
         } else {
-          this.$store.commit('setMarathonVersion', this.$props.fullOrHalf);
+          this.$store.commit('setMarathonVersion', 'half');
         }
-        // const currentVersion = this.currentVersion
-        // const prevShouldShowFullMarathon = this.$store.state.map.shouldShowFullMarathon;
-        // const nextShouldShowFullMarathon = !prevShouldShowFullMarathon;
+      },
+      handleFullButtonClick(e) {
+        if (this.isActive) {
+          return;
+        } else {
+          this.$store.commit('setMarathonVersion', 'full');
+        }
       },
     })
   };
@@ -60,9 +75,7 @@
 <style scoped>
 
   .button-image {
-    vertical-align: top;
   }
-
   .inactive {
     background-color: #ffffff;
   }
@@ -74,6 +87,9 @@
   }
   .active:hover {
     background-color: rgb(243, 198, 19);
+  }
+  .twin-button {
+    display: inline-block;
   }
 
 </style>

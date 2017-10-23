@@ -122,25 +122,10 @@
        />
 
       <!-- CONTROLS: -->
-      <control-corner :vSide="'top'"
-                      :hSide="'almostright'"
-      >
-      </control-corner>
-
-      <div v-once>
-        <marathon-toggle-control v-once
-                                 :position="'topalmostright'"
-                                 :fullOrHalf="'half'"
-        />
-        <!-- v-if="shouldShowImageryToggle" -->
-      </div>
-
       <div v-once>
         <marathon-toggle-control v-once
                                  :position="'topright'"
-                                 :fullOrHalf="'full'"
         />
-        <!-- v-if="shouldShowImageryToggle" -->
       </div>
 
       <div v-once>
