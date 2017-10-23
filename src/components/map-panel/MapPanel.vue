@@ -9,19 +9,6 @@
           :max-zoom="this.$config.map.maxZoom"
     >
 
-      <!-- webmap -->
-      <!-- <esri-web-map>
-        <esri-web-map-layer v-for="(layer, key) in this.wmLayers"
-                            v-if="shouldShowFeatureLayer(layer)"
-                            :key="key"
-                            :layer="layer.layer"
-                            :layerName="layer.title"
-                            :layerDefinition="layer.rest.layerDefinition"
-                            :opacity="layer.opacity"
-                            :type="layer.type2"
-        />
-      </esri-web-map> -->
-
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
                             v-if="activeBasemap === key"
@@ -40,52 +27,6 @@
                             :attribution="tiledLayer.attribution"
       />
 
-      <!-- <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
-                              v-if="activeDynamicMaps.includes(key)"
-                              :key="key"
-                              :url="dynamicLayer.url"
-                              :attribution="dynamicLayer.attribution"
-                              :transparent="true"
-                              :opacity="dynamicLayer.opacity"
-      /> -->
-
-      <!-- dorParcels, pwdParcels, vacantLand, vacantBuilding -->
-      <!-- v-if="shouldShowFeatureLayer(key, featureLayer.minZoom)" -->
-      <esri-feature-layer v-for="(featureLayer, key) in this.$config.map.featureLayers"
-                          :key="key"
-                          :layerName="key"
-                          :url="featureLayer.url"
-                          :color="featureLayer.color"
-                          :fillColor="featureLayer.color"
-                          :fillOpacity="featureLayer.fillOpacity"
-                          :weight="featureLayer.weight"
-                          :pointLayer="featureLayer.pointLayer"
-                          :minZoom="featureLayer.minZoom"
-                          :maxZoom="featureLayer.maxZoom"
-                          :opacity="featureLayer.opacity"
-      />
-
-      <!-- regmaps -->
-      <!-- <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
-                              v-if="shouldShowImageOverlay(item.properties.RECMAP)"
-                              :key="key"
-                              :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
-                              :layers="[29]"
-                              :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
-                              :transparent="true"
-                              :opacity="0.5"
-      /> -->
-      <!-- :url="this.imageOverlayInfo.url"
-      :opacity="this.imageOverlayInfo.opacity" -->
-
-      <!-- address marker -->
-      <!-- REVIEW why does this need a key? it's not a list... -->
-      <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
-                    :latlng="[...geocodeGeom.coordinates].reverse()"
-                    :key="streetAddress"
-      /> -->
-
-      <!-- NEW METHOD: try rendering markers generically based on marker type -->
       <!-- vector markers -->
       <vector-marker v-for="(marker, index) in markers"
                      :latlng="marker.latlng"
@@ -99,15 +40,6 @@
 
       <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
       <svg-marker v-if="this.cyclomediaActive" />
-
-      <!-- geojson features -->
-      <!-- <geojson v-for="geojsonFeature in geojsonFeatures"
-               v-if="shouldShowGeojson(geojsonFeature.key)"
-               :geojson="geojsonFeature.geojson"
-               :color="geojsonFeature.color"
-               :weight="2"
-               :key="geojsonFeature.key"
-       /> -->
 
        <!-- location marker -->
        <circle-marker v-if="this.$store.state.map.location.lat != null"
@@ -142,15 +74,6 @@
         />
       </div>
 
-      <!-- <div v-once>
-        <pictometry-button v-if="this.$config.pictometry.enabled"
-                           v-once
-                           :position="'topright'"
-                           :link="'pictometry'"
-                           :imgSrc="'../../src/assets/pictometry.png'"
-        />
-      </div> -->
-
       <div v-once>
         <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
                            v-once
@@ -162,9 +85,6 @@
       </div>
 
       <!-- search control -->
-      <!-- custom components seem to have to be wrapped like this to work
-           with v-once
-      -->
       <div v-once>
         <control position="topleft">
           <div class="mb-search-control-container">
@@ -173,7 +93,6 @@
                        placeholder="Search the map"
                        :value="this.$config.defaultAddress"
                 />
-                <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
                 <button class="mb-search-control-button">
                   <i class="fa fa-search fa-lg"></i>
                 </button>
@@ -195,7 +114,6 @@
 
     </map_>
     <slot class='widget-slot' name="cycloWidget" />
-    <!-- <slot class='widget-slot' name="pictWidget" /> -->
   </div>
 </template>
 
@@ -203,7 +121,6 @@
   // mixins
   import markersMixin from './markers-mixin';
   import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
-  import pictometryMixin from '../../pictometry/map-panel-mixin';
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
@@ -229,7 +146,6 @@
     mixins: [
       markersMixin,
       cyclomediaMixin,
-      // pictometryMixin,
     ],
     components: {
       Map_,
@@ -246,19 +162,12 @@
       SvgMarker,
       BasemapToggleControl,
       MarathonToggleControl,
-      // PictometryButton,
       CyclomediaButton,
       CyclomediaRecordingCircle,
       LocationControl,
       ControlCorner,
     },
     created() {
-      // if there's a default address, navigate to it
-      const defaultAddress = this.$config.defaultAddress;
-      if (defaultAddress) {
-        this.$controller.goToDefaultAddress(defaultAddress);
-      }
-
       // create cyclomedia recordings client
       this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
         this.$config.cyclomedia.recordingsUrl,
@@ -304,23 +213,6 @@
         }
         return layers;
       },
-      activeDynamicMaps() {
-        if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
-          return [];
-        } else {
-          return this.activeTopicConfig.dynamicMapLayers;
-        }
-      },
-      activeFeatureLayers() {
-        if (!this.activeTopicConfig || !this.activeTopicConfig.featureLayers) {
-          return [];
-        } else {
-          return this.activeTopicConfig.featureLayers;
-        }
-      },
-      activeFeature() {
-        return this.$store.state.activeFeature;
-      },
       basemaps() {
         return Object.values(this.$config.map.basemaps);
       },
@@ -345,13 +237,6 @@
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
       },
-      // picOrCycloActive() {
-      //   if (this.cyclomediaActive || this.pictometryActive) {
-      //     return true;
-      //   } else {
-      //     return false;
-      //   }
-      // },
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       }
@@ -367,35 +252,8 @@
       configForBasemap(basemap) {
         return this.$config.map.basemaps[basemap] || {};
       },
-      shouldShowGeojson(key) {
-        if (this.activeTopicConfig.basemap === 'pwd') {
-          return true;
-        } else {
-          return key === this.activeDorParcel;
-        }
-      },
-      // shouldShowFeatureLayer(key, minZoom) {
-      //   return true;
-      // },
-      // handleMapClick(e) {
-      //   this.$controller.handleMapClick(e);
-      // },
-
       handleMapMove(e) {
         const map = this.$store.state.map.map;
-
-        const pictometryConfig = this.$config.pictometry || {};
-
-        // if (pictometryConfig.enabled) {
-        //   // update state for pictometry
-        //   const center = map.getCenter();
-        //   const { lat, lng } = center;
-        //   const coords = [lng, lat];
-        //   this.$store.commit('setPictometryMapCenter', coords);
-        //
-        //   const zoom = map.getZoom();
-        //   this.$store.commit('setPictometryMapZoom', zoom);
-        // }
 
         const cyclomediaConfig = this.$config.cyclomedia || {};
 
@@ -415,12 +273,6 @@
   .mb-panel-map {
     /*this allows the loading mask to fill the div*/
     position: relative;
-  }
-
-  @media (max-width: 1024px) {
-    .mb-panel-map {
-      height: 600px;
-    }
   }
 
   .mb-search-control-container {

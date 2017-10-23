@@ -15,18 +15,7 @@
 <script>
   export default {
     computed: {
-      // pictometryActive() {
-      //   return this.$store.state.pictometry.active
-      // },
-      // cycloContainerClass() {
-      //   if (this.pictometryActive) {
-      //     return 'large-16 columns mb-panel'
-      //   } else {
-      //     return 'large-24 columns mb-panel'
-      //   }
-      // },
       locForCyclo() {
-        // console.log('computing locForCyclo');
         const geocodeData = this.$store.state.geocode.data;
         const map = this.$store.state.map.map;
         if (geocodeData) {
@@ -36,7 +25,6 @@
     },
     watch: {
       locForCyclo(coords){
-        // console.log(coords);
         this.setNewLocation(coords);
       }
     },

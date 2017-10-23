@@ -1,7 +1,6 @@
 <template>
   <div class="large-12 columns mb-panel mb-panel-topics" id="topic-panel">
     <div class="row">
-    <!-- <div class="row" :class="{ 'row-with-widget': this.$store.state.pictometry.active }"> -->
       <!-- before search -->
       <!-- <greeting v-show="!geocode" /> -->
       <greeting v-show="shouldShowGreeting" />
