@@ -3,6 +3,7 @@ import createStore from './store';
 import configMixin from './util/config-mixin';
 import Mapboard from './components/Mapboard.vue';
 import mergeDeep from './util/merge-deep';
+import controllerMixin from './controller';
 import generateUniqueId from './util/unique-id';
 
 export default (clientConfig) => {
@@ -27,6 +28,9 @@ export default (clientConfig) => {
 
     // create store
     const store = createStore(config);
+
+    // mix in controller
+    Vue.use(controllerMixin, { config, store, eventBus });
 
     // mount main vue
     const vm = new Vue({
