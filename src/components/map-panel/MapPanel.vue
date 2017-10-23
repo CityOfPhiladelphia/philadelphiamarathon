@@ -278,7 +278,6 @@
   .mb-search-control-container {
     height: 48px;
     border-radius: 2px;
-    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
   }
 
   .mb-search-control-button {
@@ -288,6 +287,7 @@
   }
 
   .mb-search-control-input {
+    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
     border: 0;
     height: 48px !important;
     line-height: 48px;
@@ -324,5 +324,12 @@
     position: absolute;
     top: 40%;
     left: 40%;
+  }
+
+  /*make search box smaller for tablets*/
+  @media screen and (max-width: 640px) {
+    .mb-search-control-input {
+      width: 200px;
+    }
   }
 </style>
