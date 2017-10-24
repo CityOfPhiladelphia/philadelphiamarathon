@@ -27,6 +27,7 @@
     mounted() {
       this.$store.commit('setCyclomediaEnabled', this.$config.cyclomedia.enabled);
       window.addEventListener('resize', this.handleWindowResize);
+      this.handleWindowResize();
     },
     computed: {
       cyclomediaEnabled() {
@@ -38,13 +39,18 @@
     },
     methods: {
       handleWindowResize() {
-        const width = $(window).width()
-        alert('handleWindowResize is running, width: ' + $(window).width());
-        if (!this.cyclomediaEnabled) {
-          if (width > 1024) {
-            this.$store.commit('setCyclomediaEnabled', true);
-          }
+        // const width = $(window).width()
+        const rootElement = document.getElementById('mb-root');
+        const rootStyle = window.getComputedStyle(rootElement);
+        const rootHeight = rootStyle.getPropertyValue('height');
+        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+        const rootWidth = rootStyle.getPropertyValue('width');
+        const rootWidthNum = parseInt(rootWidth.replace('px', ''));
+        const obj = {
+          height: rootHeightNum,
+          width: rootWidthNum
         }
+        this.$store.commit('setWindowSize', obj);
       },
     }
   };

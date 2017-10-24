@@ -1,5 +1,8 @@
 <template>
-  <div id="map-container" :class="'large-'+this.columns+' columns mb-panel mb-panel-map'">
+  <!-- <div id="map-container" :class="'large-'+this.columns+' columns mb-panel mb-panel-map'"> -->
+  <div id="map-container"
+       :class="this.mapClass"
+  >
     <map_
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"
@@ -180,13 +183,23 @@
       );
     },
     computed: {
-      columns() {
-        if (this.cyclomediaActive) {
-          return 12;
+      windowSize() {
+        return this.$store.state.windowSize;
+      },
+      mapClass() {
+        if (!this.cyclomediaActive) {
+          return 'large-24 columns mb-panel mb-panel-map';
+        } else if (this.cyclomediaActive && this.windowSize.width > 1024) {
+          return 'large-12 columns mb-panel mb-panel-map';
         } else {
-          return 24;
+          return 'large-24 columns mb-panel mb-panel-map-w-widget';
         }
       },
+      // searchControlClass() {
+      //   if (!this.cyclomediaActive) {
+      //
+      //   }
+      // }
       geolocationEnabled() {
         return this.$config.geolocation.enabled;
       },
@@ -279,7 +292,12 @@
 <style scoped>
   .mb-panel-map {
     /*this allows the loading mask to fill the div*/
-    position: relative;
+    /*position: relative;*/
+    height: 100%;
+  }
+
+  .mb-panel-map-w-widget {
+    height: 50%;
   }
 
   .mb-search-control-container {
@@ -303,12 +321,9 @@
     padding-right: 15px;
     font-family: 'Montserrat', 'Tahoma', sans-serif;
     font-size: 16px;
-    width: 400px;
+    width: 350px;
   }
 
-  .mb-map-with-widget {
-    height: 50%;
-  }
 
   .widget-slot {
     display: inline-block;
@@ -334,7 +349,7 @@
   }
 
   /*make search box smaller for tablets*/
-  @media screen and (max-width: 640px) {
+  @media screen and (max-width: 500px) {
     .mb-search-control-input {
       width: 200px;
     }

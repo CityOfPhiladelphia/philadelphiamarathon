@@ -37,6 +37,10 @@ function createStore(config) {
       locFromApp: null,
       locFromViewer: null,
     },
+    windowSize: {
+      height: 0,
+      width: 0,
+    }
   };
 
   // TODO standardize how payloads are passed around/handled
@@ -126,14 +130,9 @@ function createStore(config) {
       setCyclomediaLocFromViewer(state, payload) {
         state.cyclomedia.locFromViewer = payload;
       },
-      // setActiveFeature(state, payload) {
-      //   const { featureId, tableId } = payload || {};
-      //   const nextActiveFeature = { featureId, tableId };
-      //   state.activeFeature = nextActiveFeature;
-      // },
-      // setLastSearchMethod(state, payload) {
-      //   state.lastSearchMethod = payload;
-      // },
+      setWindowSize(state, payload) {
+        state.windowSize = payload;
+      }
     }
   });
 }
