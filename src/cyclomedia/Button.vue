@@ -40,7 +40,7 @@
     methods: {
       handleButtonClick(e) {
         const willBeActive = !this.$store.state.cyclomedia.active;
-
+        console.log('cyclomedia button clicked, willBeActive:', willBeActive);
         this.$store.commit('setCyclomediaActive', willBeActive);
 
         // if the cyclo viewer is off screen when it loads imagery, it won't

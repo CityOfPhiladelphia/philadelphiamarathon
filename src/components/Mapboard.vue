@@ -5,7 +5,8 @@
   >
     <map-panel>
     </map-panel>
-    <cyclomedia-widget v-if="this.$config.cyclomedia.enabled"
+    <!-- <cyclomedia-widget v-if="this.$config.cyclomedia.enabled" -->
+    <cyclomedia-widget v-if="this.cyclomediaEnabled"
                        slot="cycloWidget"
                        v-show="cyclomediaActive"
     />
@@ -13,21 +14,39 @@
 </template>
 
 <script>
-  import TopicPanel from './TopicPanel.vue';
+  // import TopicPanel from './TopicPanel.vue';
   import MapPanel from './map-panel/MapPanel.vue';
   import CyclomediaWidget from '../cyclomedia/Widget.vue';
 
   export default {
     components: {
-      TopicPanel,
+      // TopicPanel,
       MapPanel,
       CyclomediaWidget,
     },
+    mounted() {
+      this.$store.commit('setCyclomediaEnabled', this.$config.cyclomedia.enabled);
+      window.addEventListener('resize', this.handleWindowResize);
+    },
     computed: {
+      cyclomediaEnabled() {
+        return this.$store.state.cyclomedia.enabled;
+      },
       cyclomediaActive() {
         return this.$store.state.cyclomedia.active;
       },
     },
+    methods: {
+      handleWindowResize() {
+        console.log('handleWindowResize is running');
+        const width = $(window).width()
+        if (!this.cyclomediaEnabled) {
+          if (width > 640) {
+            this.$store.commit('setCyclomediaEnabled', true);
+          }
+        }
+      },
+    }
   };
 </script>
 

@@ -74,15 +74,18 @@
         />
       </div>
 
-      <div v-once>
-        <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
-                           v-once
-                           :position="'topright'"
-                           :link="'cyclomedia'"
-                           :imgSrc="'../../src/assets/cyclomedia.png'"
-                           @click="handleCyclomediaButtonClick"
-        />
-      </div>
+      <!-- <div v-once> -->
+        <!-- <cyclomedia-button v-if="this.$config.cyclomedia.enabled" -->
+        <!-- <cyclomedia-button v-if="this.cyclomediaEnabled" -->
+      <cyclomedia-button v-show="this.cyclomediaEnabled"
+                         :position="'topright'"
+                         :link="'cyclomedia'"
+                         :imgSrc="'../../src/assets/cyclomedia.png'"
+                         @click="handleCyclomediaButtonClick"
+      />
+        <!-- v-once -->
+      <!-- </div> -->
+
 
       <!-- search control -->
       <div v-once>
@@ -234,9 +237,12 @@
       streetAddress() {
         return this.geocodeResult.properties.street_address;
       },
-      cyclomediaActive() {
-        return this.$store.state.cyclomedia.active;
+      cyclomediaEnabled() {
+        return this.$store.state.cyclomedia.enabled;
       },
+      // cyclomediaActive() {
+      //   return this.$store.state.cyclomedia.active;
+      // },
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
       }
@@ -255,9 +261,10 @@
       handleMapMove(e) {
         const map = this.$store.state.map.map;
 
-        const cyclomediaConfig = this.$config.cyclomedia || {};
+        // const cyclomediaConfig = this.$config.cyclomedia || {};
 
-        if (cyclomediaConfig.enabled) {
+        // if (cyclomediaConfig.enabled) {
+        if (this.cyclomediaEnabled) {
           // update cyclo recordings
           this.updateCyclomediaRecordings();
         }

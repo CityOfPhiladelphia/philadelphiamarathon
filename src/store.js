@@ -30,6 +30,7 @@ function createStore(config) {
     },
     marathonVersion: 'full',
     cyclomedia: {
+      enabled: null,
       active: false,
       viewer: null,
       recordings: [],
@@ -104,8 +105,11 @@ function createStore(config) {
       setMarathonVersion(state, payload) {
         state.marathonVersion = payload;
       },
+      setCyclomediaEnabled(state, payload) {
+        state.cyclomedia.enabled = payload;
+      },
       setCyclomediaActive(state, payload) {
-        if (!config.cyclomedia.enabled) {
+        if (!state.cyclomedia.enabled) {
           return;
         }
         state.cyclomedia.active = payload;

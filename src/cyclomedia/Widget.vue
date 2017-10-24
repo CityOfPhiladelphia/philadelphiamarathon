@@ -29,6 +29,7 @@
       }
     },
     mounted() {
+      console.log('cyclomedia widget mounted is running');
       StreetSmartApi.init({
         username: this.$config.cyclomedia.username,
         password: this.$config.cyclomedia.password,
