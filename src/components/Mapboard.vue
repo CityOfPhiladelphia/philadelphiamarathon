@@ -41,7 +41,7 @@
         const width = $(window).width()
         alert('handleWindowResize is running, width: ' + $(window).width());
         if (!this.cyclomediaEnabled) {
-          if (width > 640) {
+          if (width > 1024) {
             this.$store.commit('setCyclomediaEnabled', true);
           }
         }
