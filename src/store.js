@@ -4,143 +4,14 @@ import Vuex from 'vuex';
 // when you load vuex from a script tag this seems to happen automatically
 // Vue.use(Vuex);
 
-// this grabs horizontal table ids from an array of topic components,
-// recursively
-function getTableIdsFromComps(comps = []) {
-  // const topics = config.topics;
-
-  let tableIds = [];
-
-  for (let comp of comps) {
-    const options = comp.options || {};
-    const innerComps = options.components;
-
-    // if this is a "group" component, recurse
-    if (innerComps) {
-      const innerTableIds = getTableIdsFromComps(innerComps);
-      tableIds = tableIds.concat(innerTableIds);
-      continue;
-    }
-
-    // skip comps that aren't horizontal tables
-    if (comp.type !== 'horizontal-table') {
-      continue;
-    }
-
-    const tableId = comp._id;
-
-    tableIds.push(tableId);
-  }
-
-  return tableIds;
-}
-
-// this makes the empty filtered data object given a list of topics.
-function createFilteredData(config) {
-  const topics = config.topics;
-  let tableIds = [];
-
-  for (let topic of topics) {
-    const comps = topic.components;
-    const compTableIds = getTableIdsFromComps(comps);
-    tableIds = tableIds.concat(compTableIds);
-  }
-
-  const filteredData = tableIds.reduce((acc, tableId) => {
-    acc[tableId] = [];
-    return acc;
-  }, {});
-
-  return filteredData;
-}
-
-// this grabs table group ids from an array of topic components
-function getTableGroupIdFromComps(comps = []) {
-
-  let tableGroupId;
-
-  for (let comp of comps) {
-    const options = comp.options || {};
-    const innerComps = options.components;
-
-    // if this is a "group" component, recurse
-    if (!innerComps) {
-      continue;
-    }
-
-    // skip comps that aren't horizontal tables
-    if (comp.type !== 'table-group') {
-      continue;
-    }
-
-    tableGroupId = comp._id;
-  }
-
-  return tableGroupId;
-}
-
-// this makes the empty tableGroups object given a list of topics.
-function createTableGroups(config) {
-  const topics = config.topics;
-
-  let tableGroupIds = [];
-
-  for (let topic of topics) {
-    const comps = topic.components;
-    const compTableGroupId = getTableGroupIdFromComps(comps);
-    if (compTableGroupId) tableGroupIds.push(compTableGroupId);
-  }
-
-  let tableGroups = {};
-
-  for (let tableGroupId of tableGroupIds) {
-    tableGroups[tableGroupId] = {
-      activeTable: null,
-      activeTableId: null
-    };
-  }
-  return tableGroups;
-}
-
 function createStore(config) {
-  const defaultTopic = config.topics[0];
-
-  // create initial state for sources. data key => {}
-  const sourceKeys = Object.keys(config.dataSources || {});
-  const sources = sourceKeys.reduce((o, key) => {
-    let val;
-    // if the source has targets, just set it to be an empty object
-    if (config.dataSources[key].targets) {
-      val = {
-        targets: {}
-      };
-    } else {
-      val = {
-       // we have to define these here, because vue can't observe properties that
-       // are added later.
-       status: null,
-       secondaryStatus: null,
-       data: null
-     };
-    }
-
-    o[key] = val;
-
-    return o;
-  }, {});
-
   const initialState = {
-    // activeTopic: defaultTopic.key,
-    // activeParcelLayer: defaultTopic.parcels,
-    // the ais feature
     clickCoords: null,
     geocode: {
       status: null,
       data: null,
       input: null,
       related: null,
-      // forwardStatus: null,
-      // reverseStatus: null,
     },
     lastSearchMethod: null,
     // the leaflet map object
@@ -152,100 +23,29 @@ function createStore(config) {
       center: config.map.center,
       zoom: config.map.zoom,
       map: null,
-      basemap: defaultTopic.basemap,
+      basemap: 'pwd',
       imagery: 'imagery2017',
       shouldShowImagery: false,
-      // circleMarkers: [],
-      // this is the key for the active overlay image (eg regmap)
-      imageOverlay: null,
-      imageOverlayOpacity: null,
-      filters: [],
       watchPositionOn: false,
-      // features: {
-      //   markers: [
-      //     // {
-      //     //   geometry: '',
-      //     //   // optional - mainly for symbology
-      //     //   options: {}
-      //     // }
-      //   ],
-      //   polygons: [
-      //
-      //   ]
-      // }
     },
     marathonVersion: 'full',
-    // dorParcels: {
-    //   data: [],
-    //   status: null
-    // },
-    // activeDorParcel: null,
-    // activeDorAddress: null,
-    // activeDorMapreg: null,
-    // pwdParcel: null,
-    // sources,
     cyclomedia: {
+      enabled: null,
       active: false,
       viewer: null,
       recordings: [],
       locFromApp: null,
       locFromViewer: null,
     },
-    // we need this to know whether or not to force an update on the first show
-    // pictometry: {
-    //   ipa: null,
-    //   active: false,
-    //   shapeIds: [],
-    //   pngMarkerIds: [],
-    //   zoom: null,
-    //   // this is the state of the main leaflet map. when these values change
-    //   // the pictometry widget should react. the reason these are duplicated
-    //   // here is to avoid an infinite loop in the Map component when the
-    //   // viewport changes.
-    //   map: {
-    //     center: config.map.center,
-    //     zoom: config.map.zoom
-    //   }
-    // },
-    // tables: {
-    //   // table id => filtered rows
-    //   filteredData: createFilteredData(config),
-    // },
-    // tableGroups: createTableGroups(config),
-    // activeFeature: {
-    //   featureId: null,
-    //   tableId: null
-    // }
+    windowSize: {
+      height: 0,
+      width: 0,
+    }
   };
 
   // TODO standardize how payloads are passed around/handled
   return new Vuex.Store({
     state: initialState,
-    // getters: {
-    //   visibleTableIds(state) {
-    //     // get active topic
-    //     const activeTopic = state.activeTopic;
-    //
-    //     if (!activeTopic) {
-    //       return [];
-    //     }
-    //
-    //     // get horizontal table ids for that topic
-    //     const activeTopicConfig = (config.topics.filter(topic => topic.key === activeTopic) || [])[0];
-    //     const comps = activeTopicConfig.components;
-    //
-    //     const compTableGroup = getTableGroupIdFromComps(comps);
-    //     if (compTableGroup) {
-    //       // even though there is only 1 value, it has to be in array form in the state
-    //       const array = [];
-    //       array.push(state.tableGroups[compTableGroup].activeTableId);
-    //       return array;
-    //     } else {
-    //       const compTables = getTableIdsFromComps(comps);
-    //       return compTables;
-    //     }
-    //   }
-    // },
     mutations: {
       setLocation(state, payload) {
         state.map.location.lat = payload.lat;
@@ -272,87 +72,9 @@ function createStore(config) {
 
         state.tables.filteredData[tableId] = data;
       },
-      // setActiveTopic(state, payload) {
-      //   state.activeTopic = payload;
-      // },
-      // setActiveParcelLayer(state, payload) {
-      //   state.activeParcelLayer = payload;
-      // },
-      // setSourceStatus(state, payload) {
-      //   const key = payload.key;
-      //   const status = payload.status;
-      //
-      //   // if a target id was passed in, set the status for that target
-      //   const targetId = payload.targetId;
-      //
-      //   if (targetId) {
-      //     state.sources[key].targets[targetId].status = status;
-      //   } else {
-      //     state.sources[key].status = status;
-      //   }
-      // },
-      // setSecondarySourceStatus(state, payload) {
-      //   const key = payload.key;
-      //   const secondaryStatus = payload.secondaryStatus;
-      //
-      //   // if a target id was passed in, set the status for that target
-      //   const targetId = payload.targetId;
-      //
-      //   // if (targetId) {
-      //   //   state.sources[key].targets[targetId].status = status;
-      //   // } else {
-      //   state.sources[key].secondaryStatus = secondaryStatus;
-      //   // }
-      // },
-      // setSourceData(state, payload) {
-      //   const key = payload.key;
-      //   const data = payload.data;
-      //
-      //   // if a target id was passed in, set the data object for that target
-      //   const targetId = payload.targetId;
-      //
-      //   if (targetId) {
-      //     state.sources[key].targets[targetId].data = data;
-      //   } else {
-      //     state.sources[key].data = data;
-      //   }
-      // },
-      // setSourceDataMore(state, payload) {
-      //   const key = payload.key;
-      //   const data = payload.data;
-      //   const oldData = state.sources[key].data;
-      //   console.log('oldData features', oldData.features, 'data features', data.features);
-      //   const allData = oldData.features.concat(data.features);
-      //   console.log('allData', allData);
-      //   // if a target id was passed in, set the data object for that target
-      //   // const targetId = payload.targetId;
-      //
-      //   // if (targetId) {
-      //   //   state.sources[key].targets[targetId].data = data;
-      //   // } else {
-      //
-      //   state.sources[key].data.features = allData;
-      //   state.sources[key].data.page = 2;
-      //   // }
-      // },
       setMapFilters(state, payload) {
         state.map.filters = payload;
       },
-      // this sets empty targets for a data source
-      // createEmptySourceTargets(state, payload) {
-      //   const {key, targetIds} = payload;
-      //   state.sources[key].targets = targetIds.reduce((acc, targetId) => {
-      //     acc[targetId] = {
-      //       status: null,
-      //       data: null
-      //     };
-      //     return acc;
-      //   }, {});
-      // },
-      // clearSourceTargets(state, payload) {
-      //   const key = payload.key;
-      //   state.sources[key].targets = {};
-      // },
       setMap(state, payload) {
         state.map.map = payload.map;
       },
@@ -363,33 +85,9 @@ function createStore(config) {
       setMapZoom(state, payload) {
         state.map.zoom = payload
       },
-      setDorParcelData(state, payload) {
-        state.dorParcels.data = payload;
-      },
-      setDorParcelStatus(state, payload) {
-        state.dorParcels.status = payload;
-      },
-      setActiveDorParcel(state, payload) {
-        state.activeDorParcel = payload;
-      },
-      setActiveDorAddress(state, payload) {
-        state.activeDorAddress = payload;
-      },
-      setActiveDorMapreg(state, payload) {
-        state.activeDorMapreg = payload;
-      },
-      setPwdParcel(state, payload) {
-        state.pwdParcel = payload;
-      },
       setGeocodeStatus(state, payload) {
         state.geocode.status = payload;
       },
-      // setGeocodeForwardStatus(state, payload) {
-      //   state.geocode.forwardStatus = payload;
-      // },
-      // setGeocodeReverseStatus(state, payload) {
-      //   state.geocode.reverseStatus = payload;
-      // },
       setGeocodeData(state, payload) {
         state.geocode.data = payload;
       },
@@ -411,14 +109,11 @@ function createStore(config) {
       setMarathonVersion(state, payload) {
         state.marathonVersion = payload;
       },
-      setPictometryActive(state, payload) {
-        if (!config.pictometry.enabled) {
-          return;
-        }
-        state.pictometry.active = payload;
+      setCyclomediaEnabled(state, payload) {
+        state.cyclomedia.enabled = payload;
       },
       setCyclomediaActive(state, payload) {
-        if (!config.cyclomedia.enabled) {
+        if (!state.cyclomedia.enabled) {
           return;
         }
         state.cyclomedia.active = payload;
@@ -435,42 +130,9 @@ function createStore(config) {
       setCyclomediaLocFromViewer(state, payload) {
         state.cyclomedia.locFromViewer = payload;
       },
-      setActiveFeature(state, payload) {
-        const { featureId, tableId } = payload || {};
-        const nextActiveFeature = { featureId, tableId };
-        state.activeFeature = nextActiveFeature;
-      },
-      setLastSearchMethod(state, payload) {
-        state.lastSearchMethod = payload;
-      },
-      // setPictometryIpa(state, payload) {
-      //   state.pictometry.ipa = payload;
-      // },
-      // setPictometryShapeIds(state, payload) {
-      //   state.pictometry.shapeIds = payload;
-      // },
-      // setPictometryPngMarkerIds(state, payload) {
-      //   state.pictometry.pngMarkerIds = payload;
-      // },
-      // this is the leaflet map center updated when the map is moved
-      // setPictometryMapCenter(state, payload) {
-      //   state.pictometry.map.center = payload;
-      // },
-      // setPictometryMapZoom(state, payload) {
-      //   state.pictometry.map.zoom = payload;
-      // },
-      // setPictometryZoom(state, payload) {
-      //   state.pictometry.zoom = payload;
-      // },
-      setImageOverlay(state, payload) {
-        state.map.imageOverlay = payload;
-      },
-      setImageOverlayOpacity(state, payload) {
-        state.map.imageOverlayOpacity = payload;
-      },
-      // setCircleMarkers(state, payload) {
-      //   state.map.circleMarkers.push(payload);
-      // }
+      setWindowSize(state, payload) {
+        state.windowSize = payload;
+      }
     }
   });
 }

@@ -1,5 +1,8 @@
 <template>
-  <div id="map-container" :class="'large-'+this.columns+' columns mb-panel mb-panel-map'">
+  <!-- <div id="map-container" :class="'large-'+this.columns+' columns mb-panel mb-panel-map'"> -->
+  <div id="map-container"
+       :class="this.mapClass"
+  >
     <map_
           :center="this.$store.state.map.center"
           :zoom="this.$store.state.map.zoom"
@@ -8,19 +11,6 @@
           :min-zoom="this.$config.map.minZoom"
           :max-zoom="this.$config.map.maxZoom"
     >
-
-      <!-- webmap -->
-      <!-- <esri-web-map>
-        <esri-web-map-layer v-for="(layer, key) in this.wmLayers"
-                            v-if="shouldShowFeatureLayer(layer)"
-                            :key="key"
-                            :layer="layer.layer"
-                            :layerName="layer.title"
-                            :layerDefinition="layer.rest.layerDefinition"
-                            :opacity="layer.opacity"
-                            :type="layer.type2"
-        />
-      </esri-web-map> -->
 
       <!-- basemaps -->
       <esri-tiled-map-layer v-for="(basemap, key) in this.$config.map.basemaps"
@@ -40,52 +30,6 @@
                             :attribution="tiledLayer.attribution"
       />
 
-      <!-- <esri-dynamic-map-layer v-for="(dynamicLayer, key) in this.$config.map.dynamicMapLayers"
-                              v-if="activeDynamicMaps.includes(key)"
-                              :key="key"
-                              :url="dynamicLayer.url"
-                              :attribution="dynamicLayer.attribution"
-                              :transparent="true"
-                              :opacity="dynamicLayer.opacity"
-      /> -->
-
-      <!-- dorParcels, pwdParcels, vacantLand, vacantBuilding -->
-      <!-- v-if="shouldShowFeatureLayer(key, featureLayer.minZoom)" -->
-      <esri-feature-layer v-for="(featureLayer, key) in this.$config.map.featureLayers"
-                          :key="key"
-                          :layerName="key"
-                          :url="featureLayer.url"
-                          :color="featureLayer.color"
-                          :fillColor="featureLayer.color"
-                          :fillOpacity="featureLayer.fillOpacity"
-                          :weight="featureLayer.weight"
-                          :pointLayer="featureLayer.pointLayer"
-                          :minZoom="featureLayer.minZoom"
-                          :maxZoom="featureLayer.maxZoom"
-                          :opacity="featureLayer.opacity"
-      />
-
-      <!-- regmaps -->
-      <!-- <esri-dynamic-map-layer v-for="(item, key) in this.imageOverlayItems"
-                              v-if="shouldShowImageOverlay(item.properties.RECMAP)"
-                              :key="key"
-                              :url="'//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/'"
-                              :layers="[29]"
-                              :layerDefs="'29:NAME=\'g' + item.properties.RECMAP.toLowerCase() + '.tif\''"
-                              :transparent="true"
-                              :opacity="0.5"
-      /> -->
-      <!-- :url="this.imageOverlayInfo.url"
-      :opacity="this.imageOverlayInfo.opacity" -->
-
-      <!-- address marker -->
-      <!-- REVIEW why does this need a key? it's not a list... -->
-      <!-- <vector-marker v-if="identifyFeature === 'address-marker' && geocodeGeom"
-                    :latlng="[...geocodeGeom.coordinates].reverse()"
-                    :key="streetAddress"
-      /> -->
-
-      <!-- NEW METHOD: try rendering markers generically based on marker type -->
       <!-- vector markers -->
       <vector-marker v-for="(marker, index) in markers"
                      :latlng="marker.latlng"
@@ -99,15 +43,6 @@
 
       <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
       <svg-marker v-if="this.cyclomediaActive" />
-
-      <!-- geojson features -->
-      <!-- <geojson v-for="geojsonFeature in geojsonFeatures"
-               v-if="shouldShowGeojson(geojsonFeature.key)"
-               :geojson="geojsonFeature.geojson"
-               :color="geojsonFeature.color"
-               :weight="2"
-               :key="geojsonFeature.key"
-       /> -->
 
        <!-- location marker -->
        <circle-marker v-if="this.$store.state.map.location.lat != null"
@@ -142,29 +77,20 @@
         />
       </div>
 
-      <!-- <div v-once>
-        <pictometry-button v-if="this.$config.pictometry.enabled"
-                           v-once
-                           :position="'topright'"
-                           :link="'pictometry'"
-                           :imgSrc="'../../src/assets/pictometry.png'"
-        />
-      </div> -->
+      <!-- <div v-once> -->
+        <!-- <cyclomedia-button v-if="this.$config.cyclomedia.enabled" -->
+        <!-- <cyclomedia-button v-if="this.cyclomediaEnabled" -->
+      <cyclomedia-button v-show="this.cyclomediaEnabled"
+                         :position="'topright'"
+                         :link="'cyclomedia'"
+                         :imgSrc="'../../src/assets/cyclomedia.png'"
+                         @click="handleCyclomediaButtonClick"
+      />
+      <!-- v-once -->
+      <!-- </div> -->
 
-      <div v-once>
-        <cyclomedia-button v-if="this.$config.cyclomedia.enabled"
-                           v-once
-                           :position="'topright'"
-                           :link="'cyclomedia'"
-                           :imgSrc="'../../src/assets/cyclomedia.png'"
-                           @click="handleCyclomediaButtonClick"
-        />
-      </div>
 
       <!-- search control -->
-      <!-- custom components seem to have to be wrapped like this to work
-           with v-once
-      -->
       <div v-once>
         <control position="topleft">
           <div class="mb-search-control-container">
@@ -173,7 +99,6 @@
                        placeholder="Search the map"
                        :value="this.$config.defaultAddress"
                 />
-                <!-- :style="{ background: !!this.$store.state.error ? '#ffcece' : '#fff'}" -->
                 <button class="mb-search-control-button">
                   <i class="fa fa-search fa-lg"></i>
                 </button>
@@ -195,7 +120,6 @@
 
     </map_>
     <slot class='widget-slot' name="cycloWidget" />
-    <!-- <slot class='widget-slot' name="pictWidget" /> -->
   </div>
 </template>
 
@@ -203,7 +127,6 @@
   // mixins
   import markersMixin from './markers-mixin';
   import cyclomediaMixin from '../../cyclomedia/map-panel-mixin';
-  import pictometryMixin from '../../pictometry/map-panel-mixin';
   // vue doesn't like it when you import this as Map (reserved-ish word)
   import Map_ from '../../leaflet/Map.vue';
   import Control from '../../leaflet/Control.vue';
@@ -229,7 +152,6 @@
     mixins: [
       markersMixin,
       cyclomediaMixin,
-      // pictometryMixin,
     ],
     components: {
       Map_,
@@ -246,19 +168,12 @@
       SvgMarker,
       BasemapToggleControl,
       MarathonToggleControl,
-      // PictometryButton,
       CyclomediaButton,
       CyclomediaRecordingCircle,
       LocationControl,
       ControlCorner,
     },
     created() {
-      // if there's a default address, navigate to it
-      const defaultAddress = this.$config.defaultAddress;
-      if (defaultAddress) {
-        this.$controller.goToDefaultAddress(defaultAddress);
-      }
-
       // create cyclomedia recordings client
       this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
         this.$config.cyclomedia.recordingsUrl,
@@ -268,13 +183,23 @@
       );
     },
     computed: {
-      columns() {
-        if (this.cyclomediaActive) {
-          return 12;
+      windowSize() {
+        return this.$store.state.windowSize;
+      },
+      mapClass() {
+        if (!this.cyclomediaActive) {
+          return 'large-24 columns mb-panel mb-panel-map';
+        } else if (this.cyclomediaActive && this.windowSize.width > 1024) {
+          return 'large-12 columns mb-panel mb-panel-map';
         } else {
-          return 24;
+          return 'large-24 columns mb-panel mb-panel-map-w-widget';
         }
       },
+      // searchControlClass() {
+      //   if (!this.cyclomediaActive) {
+      //
+      //   }
+      // }
       geolocationEnabled() {
         return this.$config.geolocation.enabled;
       },
@@ -304,23 +229,6 @@
         }
         return layers;
       },
-      activeDynamicMaps() {
-        if (!this.activeTopicConfig || !this.activeTopicConfig.dynamicMapLayers) {
-          return [];
-        } else {
-          return this.activeTopicConfig.dynamicMapLayers;
-        }
-      },
-      activeFeatureLayers() {
-        if (!this.activeTopicConfig || !this.activeTopicConfig.featureLayers) {
-          return [];
-        } else {
-          return this.activeTopicConfig.featureLayers;
-        }
-      },
-      activeFeature() {
-        return this.$store.state.activeFeature;
-      },
       basemaps() {
         return Object.values(this.$config.map.basemaps);
       },
@@ -342,15 +250,11 @@
       streetAddress() {
         return this.geocodeResult.properties.street_address;
       },
-      cyclomediaActive() {
-        return this.$store.state.cyclomedia.active;
+      cyclomediaEnabled() {
+        return this.$store.state.cyclomedia.enabled;
       },
-      // picOrCycloActive() {
-      //   if (this.cyclomediaActive || this.pictometryActive) {
-      //     return true;
-      //   } else {
-      //     return false;
-      //   }
+      // cyclomediaActive() {
+      //   return this.$store.state.cyclomedia.active;
       // },
       isGeocoding() {
         return this.$store.state.geocode.status === 'waiting';
@@ -367,39 +271,13 @@
       configForBasemap(basemap) {
         return this.$config.map.basemaps[basemap] || {};
       },
-      shouldShowGeojson(key) {
-        if (this.activeTopicConfig.basemap === 'pwd') {
-          return true;
-        } else {
-          return key === this.activeDorParcel;
-        }
-      },
-      // shouldShowFeatureLayer(key, minZoom) {
-      //   return true;
-      // },
-      // handleMapClick(e) {
-      //   this.$controller.handleMapClick(e);
-      // },
-
       handleMapMove(e) {
         const map = this.$store.state.map.map;
 
-        const pictometryConfig = this.$config.pictometry || {};
+        // const cyclomediaConfig = this.$config.cyclomedia || {};
 
-        // if (pictometryConfig.enabled) {
-        //   // update state for pictometry
-        //   const center = map.getCenter();
-        //   const { lat, lng } = center;
-        //   const coords = [lng, lat];
-        //   this.$store.commit('setPictometryMapCenter', coords);
-        //
-        //   const zoom = map.getZoom();
-        //   this.$store.commit('setPictometryMapZoom', zoom);
-        // }
-
-        const cyclomediaConfig = this.$config.cyclomedia || {};
-
-        if (cyclomediaConfig.enabled) {
+        // if (cyclomediaConfig.enabled) {
+        if (this.cyclomediaEnabled) {
           // update cyclo recordings
           this.updateCyclomediaRecordings();
         }
@@ -414,19 +292,17 @@
 <style scoped>
   .mb-panel-map {
     /*this allows the loading mask to fill the div*/
-    position: relative;
+    /*position: relative;*/
+    height: 100%;
   }
 
-  @media (max-width: 1024px) {
-    .mb-panel-map {
-      height: 600px;
-    }
+  .mb-panel-map-w-widget {
+    height: 50%;
   }
 
   .mb-search-control-container {
     height: 48px;
     border-radius: 2px;
-    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
   }
 
   .mb-search-control-button {
@@ -436,6 +312,7 @@
   }
 
   .mb-search-control-input {
+    box-shadow:0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
     border: 0;
     height: 48px !important;
     line-height: 48px;
@@ -444,12 +321,9 @@
     padding-right: 15px;
     font-family: 'Montserrat', 'Tahoma', sans-serif;
     font-size: 16px;
-    width: 400px;
+    width: 350px;
   }
 
-  .mb-map-with-widget {
-    height: 50%;
-  }
 
   .widget-slot {
     display: inline-block;
@@ -472,5 +346,12 @@
     position: absolute;
     top: 40%;
     left: 40%;
+  }
+
+  /*make search box smaller for tablets*/
+  @media screen and (max-width: 500px) {
+    .mb-search-control-input {
+      width: 200px;
+    }
   }
 </style>

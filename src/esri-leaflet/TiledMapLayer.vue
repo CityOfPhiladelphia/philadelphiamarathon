@@ -39,6 +39,7 @@
       parentMounted(parent) {
         const map = parent.$leafletElement;
         this.$leafletElement.addTo(map);
+        map.attributionControl.removeAttribution('overwrite');
       }
     }
   };

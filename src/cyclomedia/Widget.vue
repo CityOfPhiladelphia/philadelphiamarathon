@@ -1,6 +1,6 @@
 <template>
   <div id="cyclo-container"
-       class="large-12 columns mb-panel"
+       :class="this.widgetClass"
   >
   <!-- v-once -->
     <!-- <a id="inCycloDiv"
@@ -15,18 +15,17 @@
 <script>
   export default {
     computed: {
-      // pictometryActive() {
-      //   return this.$store.state.pictometry.active
-      // },
-      // cycloContainerClass() {
-      //   if (this.pictometryActive) {
-      //     return 'large-16 columns mb-panel'
-      //   } else {
-      //     return 'large-24 columns mb-panel'
-      //   }
-      // },
+      windowSize() {
+        return this.$store.state.windowSize;
+      },
+      widgetClass() {
+        if (this.windowSize.width > 1024) {
+          return 'large-12 columns mb-panel mb-panel-right-widget';
+        } else {
+          return 'large-24 columns mb-panel mb-panel-bottom-widget';
+        }
+      },
       locForCyclo() {
-        // console.log('computing locForCyclo');
         const geocodeData = this.$store.state.geocode.data;
         const map = this.$store.state.map.map;
         if (geocodeData) {
@@ -36,11 +35,11 @@
     },
     watch: {
       locForCyclo(coords){
-        // console.log(coords);
         this.setNewLocation(coords);
       }
     },
     mounted() {
+      // console.log('cyclomedia widget mounted is running');
       StreetSmartApi.init({
         username: this.$config.cyclomedia.username,
         password: this.$config.cyclomedia.password,
@@ -73,9 +72,9 @@
             pitch: 0,
             hFov: 50
           }
-          console.log(orientation);
+          // console.log(orientation);
 
-          console.log('open')
+          // console.log('open')
           // viewer.openByCoordinate([-75.17506091, 39.96125317]).then(viewer.setOrientation(orientation))//.then(viewer.rotateRight(50))//.then(viewer.lookAtCoordinate([-75.175058, 39.961230]));
           viewer.openByImageId('5D5B9C93').then(viewer.setOrientation(orientation))//.then(viewer.rotateRight(50))//.then(viewer.lookAtCoordinate([-75.175058, 39.961230]));
           // console.log('opened, now setting orientation')
@@ -127,7 +126,7 @@
 
 #cyclo-container {
   padding: 0px;
-  height: 100%;
+  /*height: 100%;*/
 }
 
 #inCycloDiv {
@@ -140,6 +139,14 @@
   z-index: 10;
   position:relative;
   float: right;
+}
+
+.mb-panel-right-widget {
+  height: 100%;
+}
+
+.mb-panel-bottom-widget {
+  height: 50%;
 }
 
 .popout-icon {
