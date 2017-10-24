@@ -83,7 +83,7 @@
                          :imgSrc="'../../src/assets/cyclomedia.png'"
                          @click="handleCyclomediaButtonClick"
       />
-        <!-- v-once -->
+      <!-- v-once -->
       <!-- </div> -->
 
 
