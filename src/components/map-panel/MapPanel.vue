@@ -28,6 +28,7 @@
                             :url="tiledLayer.url"
                             :zIndex="tiledLayer.zIndex"
                             :attribution="tiledLayer.attribution"
+                            :pane="tiledLayer.pane"
       />
 
       <!-- vector markers -->
@@ -91,7 +92,7 @@
 
 
       <!-- search control -->
-      <div v-once>
+      <!-- <div v-once>
         <control position="topleft">
           <div class="mb-search-control-container">
             <form @submit.prevent="handleSearchFormSubmit">
@@ -105,7 +106,7 @@
             </form>
           </div>
         </control>
-      </div>
+      </div> -->
 
       <cyclomedia-recording-circle v-for="recording in cyclomediaRecordings"
                                    v-if="cyclomediaActive"
