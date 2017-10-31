@@ -24,6 +24,7 @@
 <script>
   import Control from '../leaflet/Control.vue';
 
+
   const {props, methods} = Control;
 
   export default {
@@ -55,18 +56,20 @@
     },
     methods: Object.assign(methods, {
       handleHalfButtonClick(e) {
-        if (this.isActive) {
-          return;
-        } else {
-          this.$store.commit('setMarathonVersion', 'half');
-        }
+        this.$controller.handleHalfButtonClick();
+        // if (this.isActive) {
+        //   return;
+        // } else {
+        //   this.$store.commit('setMarathonVersion', 'half');
+        // }
       },
       handleFullButtonClick(e) {
-        if (this.isActive) {
-          return;
-        } else {
-          this.$store.commit('setMarathonVersion', 'full');
-        }
+        this.$controller.handleFullButtonClick();
+        // if (this.isActive) {
+        //   return;
+        // } else {
+        //   this.$store.commit('setMarathonVersion', 'full');
+        // }
       },
     })
   };

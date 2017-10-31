@@ -16,6 +16,9 @@ var IS_MOBILE_OR_TABLET = (function () {
 // var windowWidth = $(window).width()
 
 Mapboard.default({
+  router: {
+    enabled: true
+  },
   geolocation: {
     enabled: true
   },
