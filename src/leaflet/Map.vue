@@ -73,11 +73,24 @@
         map.attributionControl.setPrefix('<a target="_blank" href="//www.phila.gov/it/aboutus/units/Pages/GISServicesGroup.aspx">City of Philadelphia | CityGeo</a>');
       })
 
+      // const panes = map.getPanes();
+      // const paneNames = Object.keys(panes)
+
       // signal children to mount
       for (let child of this.$children) {
-        // REVIEW it seems weird to pass children their own props. trying to
-        // remember why this was necessary... binding issue?
+        // console.log('map mounted - child', child, 'child.$props', child.$props);
+        // if (child.$props.pane === 'marathon') {
+        //   if (!paneNames.includes(this.$props.pane)) {
+        //     map.createPane(this.$props.pane);
+        //     child.parentMounted(this, child.$props);
+        //   }
+        // } else {
         child.parentMounted(this, child.$props);
+        // map.off();
+        // map.remove();
+        // map.invalidateSize();
+
+        // }
       }
 
       // bind events
