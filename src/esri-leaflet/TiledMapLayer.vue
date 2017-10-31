@@ -13,11 +13,11 @@
       'pane'
     ],
     mounted() {
-      console.log('mounted is running')
+      // console.log('mounted is running')
       const map = this.$store.state.map.map;
       const leafletElement = this.$leafletElement = this.createLeafletElement();
       if (map) {
-        console.log('mounted, there is a map');
+        // console.log('mounted, there is a map');
         const panes = map.getPanes();
         // console.log('panes', Object.keys(panes));
         if (!Object.keys(panes).includes(this.$props.pane)) {
@@ -29,7 +29,7 @@
         });
         map.attributionControl.removeAttribution('overwrite');
       } else {
-        console.log('mounted, no map');
+        // console.log('mounted, no map');
       }
     },
     destroyed() {
@@ -53,7 +53,7 @@
         return mapLayer;
       },
       parentMounted(parent) {
-        console.log('parentMounted is running');
+        // console.log('parentMounted is running');
         const map = parent.$leafletElement;
         // const panes = map.getPanes();
         // console.log('panes', Object.keys(panes));

@@ -183,6 +183,10 @@
         4326
       );
     },
+    mounted() {
+      // this.geofind();
+      this.$controller.appDidLoad();
+    },
     computed: {
       windowSize() {
         return this.$store.state.windowSize;

@@ -15,39 +15,53 @@ class Router {
 
     // only listen for route changes if routing is enabled
     if (!silent) {
+      console.log('routing is enabled, this', this);
       window.onhashchange = this.hashChanged.bind(this);
     }
   }
 
-  getAddressFromState() {
-    // TODO add an address getter fn to config so this isn't ais-specific
-    const geocodeData = this.store.state.geocode.data || {};
-    const props = geocodeData.properties || {};
-    return props.street_address;
+  makeHash(route) {
+    console.log('make hash', route);
+    // must have a route
+    if (!route || route.length === 0) {
+      return null;
+    }
+    // let hash = `#/${route)}`;
+    let hash = `#/${encodeURIComponent(route)}`;
+    return hash;
   }
 
-  routeToAddress(nextAddress) {
-    console.log('Router.routeToAddress', nextAddress);
+  hashChanged() {
+    const location = window.location;
+    const hash = location.hash;
 
-    if (nextAddress) {
-      // check against current address
-      const prevAddress = this.getAddressFromState();
+    console.log('hash changed =>', hash);
+    // parse path
+    const pathComps = hash.split('/').splice(1);
+    const routeComp = pathComps[0];
 
-      // if the hash address is different, geocode
-      if (!prevAddress || nextAddress !== prevAddress) {
-        this.dataManager.geocode(nextAddress)
-                        .then(this.didGeocode.bind(this));
+    // if there's no route, don't do anything
+    if (!routeComp) {
+      return;
+    }
+    this.store.commit('setMarathonVersion', routeComp);
+  }
+
+  routeToRoute(nextRoute) {
+    // console.log('Router.routeToRoute', nextRoute);
+    if (nextRoute) {
+      // check against current marathon route
+      const prevRoute = this.store.state.marathonVersion;
+      // if the hash address is different
+      if (!prevRoute || nextRoute !== prevRoute) {
+        // console.log('routes not the same');
+        if (!this.silent) {
+          const nextHash = this.makeHash(nextRoute);
+          // console.log('nextHash', nextHash);
+          window.location.hash = nextHash;
+        }
       }
     }
-  }
-
-  // configForBasemap(key) {
-  //   return this.config.map.basemaps[key];
-  // }
-
-  didGeocode() {
-    // console.log('Router.didGeocode');
-    const geocodeData = this.store.state.geocode.data;
   }
 }
 

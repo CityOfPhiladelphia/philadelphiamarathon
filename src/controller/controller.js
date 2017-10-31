@@ -5,10 +5,11 @@ data manager, and facilitates communication between them.
 */
 
 import Router from './router';
-import DataManager from './data-manager';
+// import DataManager from './data-manager';
 
 class Controller {
   constructor(opts) {
+    console.log('controller constructor this', this);
     const store = this.store = opts.store;
     const config = this.config = opts.config;
     const eventBus = this.eventBus = opts.eventBus;
@@ -18,10 +19,10 @@ class Controller {
     opts.controller = this;
 
     // create data manager
-    const dataManager = this.dataManager = new DataManager(opts);
+    // const dataManager = this.dataManager = new DataManager(opts);
 
     // create router
-    opts.dataManager = dataManager;
+    // opts.dataManager = dataManager;
     this.router = new Router(opts);
   }
 
@@ -31,35 +32,45 @@ class Controller {
 
   appDidLoad() {
     // route once on load
-    // this.router.hashChanged();
+    console.log('controller appDidLoad is running, this', this);
+    this.router.hashChanged();
   }
 
-  handleSearchFormSubmit(e) {
-    console.log('handle search form submit', e, this);
-    const input = e.target[0].value;
-
-    // this.store.commit('setClickCoords', null);
-    this.store.commit('setGeocodeStatus', null);
-
-    // tell router
-    this.router.routeToAddress(input);
+  handleHalfButtonClick(e) {
+    console.log('controller handleHalfButtonClick is running, e:', e, 'this:', this);
+    this.router.routeToRoute('half');
+  }
+  handleFullButtonClick(e) {
+    console.log('controller handleFullButtonClick is running, e:', e, 'this:', this);
+    this.router.routeToRoute('full');
   }
 
-  handleMapClick(e) {
-    console.log('handle map click', e, this);
+  // handleSearchFormSubmit(e) {
+  //   console.log('handle search form submit', e, this);
+  //   const input = e.target[0].value;
+  //
+  //   // this.store.commit('setClickCoords', null);
+  //   this.store.commit('setGeocodeStatus', null);
+  //
+  //   // tell router
+  //   this.router.routeToAddress(input);
+  // }
 
-    // TODO figure out why form submits via enter key are generating a map
-    // click event and remove this
-    if (e.originalEvent.keyCode === 13) {
-      return;
-    }
-    // this.store.commit('setLastSearchMethod', 'reverseGeocode');
-    // this.store.commit('setClickCoords', null);
-
-    // get parcels that intersect map click xy
-    const latLng = e.latlng;
-    // this.store.commit('setClickCoords', latLng);
-  }
+  // handleMapClick(e) {
+  //   console.log('handle map click', e, this);
+  //
+  //   // TODO figure out why form submits via enter key are generating a map
+  //   // click event and remove this
+  //   if (e.originalEvent.keyCode === 13) {
+  //     return;
+  //   }
+  //   // this.store.commit('setLastSearchMethod', 'reverseGeocode');
+  //   // this.store.commit('setClickCoords', null);
+  //
+  //   // get parcels that intersect map click xy
+  //   const latLng = e.latlng;
+  //   // this.store.commit('setClickCoords', latLng);
+  // }
 }
 
 export default Controller;
