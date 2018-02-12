@@ -50,12 +50,6 @@ Mapboard.default({
         minZoom: 12,
         pointLayer: true
       },
-      // dorParcels: {
-      //   url: '//gis.phila.gov/arcgis/rest/services/DOR_ParcelExplorer/rtt_basemap/MapServer/24',
-      // },
-      // pwdParcels: {
-      //   url: '//gis.phila.gov/arcgis/rest/services/Water/pv_data_geodb2/MapServer/0',
-      // },
     }
   },
   baseConfig: BASE_CONFIG_URL,
