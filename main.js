@@ -1,5 +1,7 @@
 var GATEKEEPER_KEY = '60a96cf015063fa0f0e2708bc3c61775';
-var BASE_CONFIG_URL = '//rawgit.com/ajrothwell/philadelphiamarathon-base-config/63ff23b666bce6ea754c9f02f002390a7d0b4245/config.js';
+// var BASE_CONFIG_URL = '//rawgit.com/ajrothwell/philadelphiamarathon-base-config/63ff23b666bce6ea754c9f02f002390a7d0b4245/config.js';
+var BASE_CONFIG_URL = 'https://cdn.jsdelivr.net/gh/ajrothwell/philadelphiamarathon-base-config@53b52c58b92878ea69c8f208295554d643f0970a/config.js';
+
 
 // var IS_MOBILE_DEVICE = (function () {
 //   var check = false;
