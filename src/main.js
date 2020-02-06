@@ -1,53 +1,84 @@
-import Vue from 'vue';
-import createStore from './store';
-import configMixin from './util/config-mixin';
-import Mapboard from './components/Mapboard.vue';
-import mergeDeep from './util/merge-deep';
-import controllerMixin from './controller';
-import generateUniqueId from './util/unique-id';
 
-export default (clientConfig) => {
-  const baseConfigUrl = clientConfig.baseConfig;
+let pictApiKey, pictSecretKey;
+const host = window.location.hostname;
+if (host === 'atlas-dev.phila.gov.s3-website-us-east-1.amazonaws.com') {
+  pictApiKey = process.env.VUE_APP_ATLASDEV_PICTOMETRY_API_KEY;
+  pictSecretKey = process.env.VUE_APP_ATLASDEV_PICTOMETRY_SECRET_KEY;
+} else {
+  pictApiKey = process.env.VUE_APP_PICTOMETRY_API_KEY;
+  pictSecretKey = process.env.VUE_APP_PICTOMETRY_SECRET_KEY;
+}
 
-  // create a global event bus used to proxy events to the mapboard host
-  const eventBus = new Vue();
-  Vue.prototype.$eventBus = eventBus;
+import viewerboard from '@phila/viewerboard/src/main.js';
 
-  // get base config
-  return axios.get(baseConfigUrl).then(response => {
-    const data = response.data;
+// import MarathonToggleControl from './components/MarathonToggleControl.vue';
+// // import newSiteModal from './components/newSiteModal.vue';
+// const customComps = {
+//   'marathonToggleControl': MarathonToggleControl,
+//   // 'newSiteModal': newSiteModal
+// };
 
-    const baseConfig = eval(data);
 
-    // deep merge base config and client config
-    //const config = mergeDeep(clientConfig, baseConfig);
-    const config = mergeDeep(baseConfig, clientConfig);
-
-    // make config accessible from each component via this.$config
-    Vue.use(configMixin, config);
-
-    // create store
-    const store = createStore(config);
-
-    // mix in controller
-    Vue.use(controllerMixin, { config, store, eventBus });
-
-    // mount main vue
-    const vm = new Vue({
-      el: config.el || '#mapboard',
-      render: h => h(Mapboard),
-      store
-    });
-
-    // bind mapboard events to host app
-    const events = config.events || {};
-    for (let eventName of Object.keys(events)) {
-      const callback = events[eventName];
-      vm.$eventBus.$on(eventName, callback);
-    }
-  }).catch(err => {
-    console.error('Error loading base config:', err);
-  });
-};
-
-export { Mapboard };
+viewerboard({
+  // customComps,
+  initialTiledOverlays: ['fullMarathon'],
+  app: {
+    title: 'Philadelphia Marathon',
+    tagLine: '',
+  },
+  // baseConfig: BASE_CONFIG_URL,
+  cyclomedia: {
+    enabled: true,
+    // orientation: 'vertical',
+    measurementAllowed: false,
+    popoutAble: true,
+    recordingsUrl: 'https://atlas.cyclomedia.com/Recordings/wfs',
+    username: process.env.VUE_APP_CYCLOMEDIA_USERNAME,
+    password: process.env.VUE_APP_CYCLOMEDIA_PASSWORD,
+    apiKey: process.env.VUE_APP_CYCLOMEDIA_API_KEY,
+  },
+  pictometry: {
+    enabled: false,
+    // orientation: 'horizontal',
+    iframeId: 'pictometry-ipa',
+    apiKey: pictApiKey,
+    secretKey: pictSecretKey,
+  },
+  initialView: ['map'],
+  geocoder: {
+    url: function (input) {
+      var inputEncoded = encodeURIComponent(input);
+      return 'https://api.phila.gov/ais/v1/search/' + inputEncoded;
+    },
+    params: {
+      gatekeeperKey: process.env.VUE_APP_GATEKEEPER_KEY,
+      include_units: true,
+      opa_only: true,
+    },
+  },
+  geolocation: {
+    enabled: true,
+    icon: [ 'far', 'dot-circle' ],
+  },
+  router: {
+    enabled: true,
+    type: 'vue'
+  },
+  // addressInput: {
+  //   width: 350,
+  //   mapWidth: 300,
+  //   // position: 'right',
+  //   autocompleteEnabled: false,
+  //   autocompleteMax: 15,
+  //   placeholder: 'Search for an address',
+  // },
+  map: {
+    center: [-75.188560, 39.982649],
+    minZoom: 11,
+    maxZoom: 25,
+    shouldInitialize: true,
+    zoom: 13,
+    marathonToggle: true,
+    basemapToggle: true,
+  },
+});
