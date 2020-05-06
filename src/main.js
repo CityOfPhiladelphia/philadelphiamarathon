@@ -29,7 +29,7 @@ viewerboard({
   // baseConfig: BASE_CONFIG_URL,
   cyclomedia: {
     enabled: true,
-    // orientation: 'vertical',
+    // orientation: 'horizontal',
     measurementAllowed: false,
     popoutAble: true,
     recordingsUrl: 'https://atlas.cyclomedia.com/Recordings/wfs',
@@ -73,7 +73,10 @@ viewerboard({
   //   placeholder: 'Search for an address',
   // },
   map: {
-    center: [-75.188560, 39.982649],
+    type: 'mapbox',
+    containerClass: 'map-container',
+    containerClassWCyclo: 'map-container',
+    center: [-75.174820, 39.961120],
     minZoom: 11,
     maxZoom: 25,
     shouldInitialize: true,
@@ -81,4 +84,114 @@ viewerboard({
     marathonToggle: true,
     basemapToggle: true,
   },
+  mbStyle: {
+    version: 8,
+    sources: {
+      pwd: {
+        tiles: [
+          '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+    },
+    layers: [
+      {
+        id: 'pwd',
+        type: 'raster',
+        source: 'pwd',
+      },
+    ]
+  },
+  basemapSources: {
+    pwd: {
+      source: {
+        tiles: [
+          '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+          // '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+      layer: {
+        id: 'pwd',
+        type: 'raster',
+      },
+    },
+    imagery2019: {
+      source: {
+        tiles: [
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2019_3in/MapServer/tile/{z}/{y}/{x}',
+          // '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+      layer: {
+        id: 'imagery2019',
+        type: 'raster',
+      },
+    },
+  },
+  basemapLabelSources:{
+    cityBasemapLabels: {
+      source: {
+        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'],
+        type: 'raster',
+        tileSize: 256,
+      },
+      layer: {
+        id: 'cityBasemapLabels',
+        type: 'raster',
+      },
+    },
+    imageryBasemapLabels: {
+      source: {
+        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer/tile/{z}/{y}/{x}'],
+        type: 'raster',
+        tileSize: 256,
+      },
+      layer: {
+        id: 'imageryBasemapLabels',
+        type: 'raster',
+      },
+    },
+  },
+  // parcels: {
+  //   source: {
+  //     tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/PWDParcel_ImageryOverlay/MapServer/tile/{z}/{y}/{x}'],
+  //     type: 'raster',
+  //     tileSize: 256,
+  //   },
+  //   layer: {
+  //     id: 'parcels',
+  //     type: 'raster',
+  //   },
+  // },
+  overlaySources: {
+    fullMarathon: {
+      source: {
+        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/Full_Marathon_2019/MapServer/tile/{z}/{y}/{x}'],
+        type: 'raster',
+        tileSize: 256,
+      },
+      layer: {
+        // id: 'overlay-fullMarathon',
+        id: 'fullMarathon',
+        type: 'raster',
+      },
+    },
+    halfMarathon: {
+      source: {
+        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/Half_Marathon_2019/MapServer/tile/{z}/{y}/{x}'],
+        type: 'raster',
+        tileSize: 256,
+      },
+      layer: {
+        // id: 'overlay-halfMarathon',
+        id: 'halfMarathon',
+        type: 'raster',
+      },
+    },
+  }
 });
