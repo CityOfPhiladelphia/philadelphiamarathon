@@ -11,16 +11,14 @@ if (host === 'atlas-dev.phila.gov.s3-website-us-east-1.amazonaws.com') {
 
 import viewerboard from '@phila/viewerboard/src/main.js';
 
-// import MarathonToggleControl from './components/MarathonToggleControl.vue';
-// // import newSiteModal from './components/newSiteModal.vue';
-// const customComps = {
-//   'marathonToggleControl': MarathonToggleControl,
-//   // 'newSiteModal': newSiteModal
-// };
+import MarathonToggleControl from './components/MarathonToggleControl.vue';
 
+const customComps = {
+  'marathonToggleControl': MarathonToggleControl,
+};
 
 viewerboard({
-  // customComps,
+  customComps,
   initialTiledOverlays: ['fullMarathon'],
   app: {
     title: 'Philadelphia Marathon',
@@ -157,17 +155,6 @@ viewerboard({
       },
     },
   },
-  // parcels: {
-  //   source: {
-  //     tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/PWDParcel_ImageryOverlay/MapServer/tile/{z}/{y}/{x}'],
-  //     type: 'raster',
-  //     tileSize: 256,
-  //   },
-  //   layer: {
-  //     id: 'parcels',
-  //     type: 'raster',
-  //   },
-  // },
   overlaySources: {
     fullMarathon: {
       source: {
@@ -176,7 +163,6 @@ viewerboard({
         tileSize: 256,
       },
       layer: {
-        // id: 'overlay-fullMarathon',
         id: 'fullMarathon',
         type: 'raster',
       },
@@ -188,7 +174,6 @@ viewerboard({
         tileSize: 256,
       },
       layer: {
-        // id: 'overlay-halfMarathon',
         id: 'halfMarathon',
         type: 'raster',
       },
