@@ -62,6 +62,7 @@ viewerboard({
     enabled: true,
     type: 'vue'
   },
+  
   // addressInput: {
   //   width: 350,
   //   mapWidth: 300,
