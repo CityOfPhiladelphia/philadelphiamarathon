@@ -170,7 +170,7 @@ viewerboard({
     },
     halfMarathon: {
       source: {
-        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Full_Marathon_AGS/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Half_Marathon_AGS/MapServer/tile/{z}/{y}/{x}'],
         type: 'raster',
         tileSize: 256,
       },
