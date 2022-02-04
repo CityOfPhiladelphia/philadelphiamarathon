@@ -62,7 +62,7 @@ viewerboard({
     enabled: true,
     type: 'vue'
   },
-  
+
   // addressInput: {
   //   width: 350,
   //   mapWidth: 300,
@@ -159,8 +159,9 @@ viewerboard({
   overlaySources: {
     fullMarathon: {
       source: {
-        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Full_Marathon_AGS/MapServer/tile/{z}/{y}/{x}'],
-        type: 'raster',
+        // tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Full_Marathon_AGS/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Full_Marathon/MapServer/tile/{z}/{y}/{x}'],
+        // type: 'raster',
         tileSize: 256,
       },
       layer: {
@@ -170,8 +171,9 @@ viewerboard({
     },
     halfMarathon: {
       source: {
-        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Half_Marathon_AGS/MapServer/tile/{z}/{y}/{x}'],
-        type: 'raster',
+        // tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Half_Marathon_AGS/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Half_Marathon/MapServer/tile/{z}/{y}/{x}'],
+        // type: 'raster',
         tileSize: 256,
       },
       layer: {
