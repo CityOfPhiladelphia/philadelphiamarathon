@@ -85,10 +85,11 @@ viewerboard({
   },
   mbStyle: {
     version: 8,
+    glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
     sources: {
       pwd: {
         tiles: [
-          '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
         ],
         type: 'raster',
         tileSize: 256,
@@ -106,7 +107,7 @@ viewerboard({
     pwd: {
       source: {
         tiles: [
-          '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
           // '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'
         ],
         type: 'raster',
@@ -148,7 +149,7 @@ viewerboard({
   basemapLabelSources:{
     cityBasemapLabels: {
       source: {
-        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'],
         type: 'raster',
         tileSize: 256,
       },
@@ -159,7 +160,7 @@ viewerboard({
     },
     imageryBasemapLabels: {
       source: {
-        tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer/tile/{z}/{y}/{x}'],
         type: 'raster',
         tileSize: 256,
       },
