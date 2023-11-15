@@ -117,20 +117,33 @@ viewerboard({
         type: 'raster',
       },
     },
-    imagery2019: {
+    imagery2022: {
       source: {
         tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2019_3in/MapServer/tile/{z}/{y}/{x}',
-          // '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2022_2in/MapServer/tile/{z}/{y}/{x}',
         ],
         type: 'raster',
         tileSize: 256,
       },
       layer: {
-        id: 'imagery2019',
+        id: 'imagery2022',
         type: 'raster',
       },
     },
+    // imagery2019: {
+    //   source: {
+    //     tiles: [
+    //       'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2019_3in/MapServer/tile/{z}/{y}/{x}',
+    //       // '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'
+    //     ],
+    //     type: 'raster',
+    //     tileSize: 256,
+    //   },
+    //   layer: {
+    //     id: 'imagery2019',
+    //     type: 'raster',
+    //   },
+    // },
   },
   basemapLabelSources:{
     cityBasemapLabels: {
@@ -159,7 +172,7 @@ viewerboard({
   overlaySources: {
     fullMarathon: {
       source: {
-        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Full_Marathon_AGS/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/FullMarathonMap/MapServer/tile/{z}/{y}/{x}'],
         // tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Full_Marathon/MapServer/tile/{z}/{y}/{x}'],
         // type: 'raster',
         tileSize: 256,
@@ -171,7 +184,7 @@ viewerboard({
     },
     halfMarathon: {
       source: {
-        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Half_Marathon_AGS/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/HalfMarathonMap/MapServer/tile/{z}/{y}/{x}'],
         // tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Half_Marathon/MapServer/tile/{z}/{y}/{x}'],
         // type: 'raster',
         tileSize: 256,
