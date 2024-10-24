@@ -173,7 +173,7 @@ viewerboard({
   overlaySources: {
     fullMarathon: {
       source: {
-        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/FullMarathonMap/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2024_FullMarathon/MapServer/tile/{z}/{y}/{x}'],
         // tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Full_Marathon/MapServer/tile/{z}/{y}/{x}'],
         // type: 'raster',
         tileSize: 256,
@@ -185,7 +185,7 @@ viewerboard({
     },
     halfMarathon: {
       source: {
-        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/HalfMarathonMap/MapServer/tile/{z}/{y}/{x}'],
+        tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2024_HalfMarathon/MapServer/tile/{z}/{y}/{x}'],
         // tiles: ['https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/2021_Half_Marathon/MapServer/tile/{z}/{y}/{x}'],
         // type: 'raster',
         tileSize: 256,
